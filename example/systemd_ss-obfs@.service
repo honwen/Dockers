@@ -1,0 +1,24 @@
+# example: /etc/ss-obfs.env
+#
+# PASSWORD=your-password
+# ARGS=--plugin obfs-server --plugin-opts obfs=tls;failover=cloudfront.com
+# 
+
+
+# example: /etc/systemd/system/ss-obfs@8388.service
+
+[Unit]
+Description=Container of ss-obfs-%I
+After=network.target docker.service
+
+[Service]
+Type=simple
+Restart=always
+# ExecStartPre=-/usr/bin/docker pull chenhw2/ss-obfs
+ExecStartPre=-/usr/bin/docker rm -f ss-obfs-%I
+# ExecStartPre=-/usr/bin/docker rmi $(docker images -q -f dangling=true)
+ExecStart=/usr/bin/docker run --rm --name ss-obfs-%I --env-file /etc/ss-obfs.env -p %I:8388/tcp -p %I:8388/udp chenhw2/ss-obfs
+ExecStop=-/usr/bin/docker kill ss-obfs-%I
+
+[Install]
+WantedBy=multi-user.target
