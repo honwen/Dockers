@@ -1,0 +1,16 @@
+# /etc/systemd/system/ssr-kcp-server@8300.service
+#  This file is example systemd-Unit of Container of SSR-KCP-SERVER.
+
+[Unit]
+Description=Container of SSR-KCP-SERVER
+After=docker.service
+
+[Service]
+Type=simple
+Restart=always
+ExecStartPre=-/usr/bin/docker rm -f ssr-kcp-%i
+ExecStart=/usr/bin/docker run --rm --name ssr-kcp-%i -e "SSR=ssr://origin:aes-256-cfb:tls1.2_ticket_auth_compatible:12345678" -p %i:8388/tcp -p %i:8388/udp -p 1%i:18388/udp chenhw2/ssr-kcp-server-lite
+ExecStop=-/usr/bin/docker kill ssr-kcp-%i
+
+[Install]
+WantedBy=multi-user.target
