@@ -24,8 +24,9 @@ ssr_port=8388
 # Gen ssr_conf
 ssr2json(){
   ssr=$1
-  ssr_obfs_param=$2
-  ssr_protocol_param=$3
+  ssr_redirect="$2"
+  ssr_obfs_param=$3
+  ssr_protocol_param=$4
   json='"protocol": "\1",\n "method": "\2",\n "obfs": "\3",\n "password": "\4"'
   cfg=$(echo ${ssr} | sed -n "s#ssr://\([^:]*\):\([^:]*\):\([^:]*\):\([^:]*\).*#${json}#p")
   cat <<EOF
@@ -33,12 +34,13 @@ ssr2json(){
  "server_port": "${ssr_port}",
  ${cfg},
  "protocol_param": "${ssr_protocol_param}",
- "obfs_param": "${ssr_obfs_param}"
+ "obfs_param": "${ssr_obfs_param}",
+ "redirect": ${ssr_redirect}
 }
 EOF
 }
 
-ssr2json ${SSR} ${SSR_OBFS_PARAM} ${SSR_PROTOCOL_PARAM} > ${ssr_conf}
+ssr2json ${SSR} "${SSR_REDIRECT}" ${SSR_OBFS_PARAM} ${SSR_PROTOCOL_PARAM} > ${ssr_conf}
 
 
 # Gen kcp_conf
