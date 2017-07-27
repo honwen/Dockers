@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM chenhw2/alpine:base
 MAINTAINER CHENHW2 <https://github.com/chenhw2>
 
 RUN apk update \
