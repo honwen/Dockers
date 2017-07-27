@@ -1,5 +1,5 @@
 ### Source
-- https://github.com/chenhw2/Dockers/tree/SSR-KCP-SERVER-lite
+- https://github.com/chenhw2/Dockers/tree/SSR-KCP-SERVER
   
 ### Thanks to
 - https://github.com/shadowsocksr/shadowsocksr
@@ -7,13 +7,13 @@
   
 ### Usage
 ```
-$ docker pull chenhw2/ssr-kcp-server-lite
+$ docker pull chenhw2/ssr-kcp-server
 
 $ docker run -d \
     -e "SSR=[ssr://protocol:method:obfs:pass]" \
     -e "KCP=[kcp://mode:crypt:key]" \
     -p 8388:8388/tcp -p 8388:8388/udp -p 18388:18388/udp \
-    chenhw2/ssr-kcp-server-lite
+    chenhw2/ssr-kcp-server
 ```
 
 ### ENV
