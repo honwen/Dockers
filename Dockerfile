@@ -1,7 +1,8 @@
 FROM chenhw2/alpine:base
 MAINTAINER CHENHW2 <https://github.com/chenhw2>
 
-ARG GOST_URL=https://github.com/ginuerzh/gost/releases/download/v2.4-dev/gost_2.4-dev20170303_linux_amd64.tar.gz
+ARG VER=2.4-rc1
+ARG GOST_URL=https://github.com/ginuerzh/gost/releases/download/v${VER}/gost_${VER}_linux_amd64.tar.gz
 
 # some package in gost need glibc
 RUN wget -qO /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub \
@@ -14,6 +15,5 @@ RUN wget -qO- ${GOST_URL} | tar xz \
     && rm -rf gost_*
 
 ENV ARGS="-L=:8080"
+CMD /usr/bin/gost ${ARGS}
 
-ENTRYPOINT [/usr/bin/gost]
-CMD ${ARGS}
