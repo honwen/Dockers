@@ -31,47 +31,33 @@ RUN set -ex && \
     curl -sSL $SS_URL | tar xz --strip 1 && \
     ./configure --prefix=/usr --disable-documentation && \
     make install && \
-    cd .. && \
-
-    runDeps="$( \
-        scanelf --needed --nobanner /usr/bin/ss-* \
-            | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
-            | xargs -r apk info --installed \
-            | sort -u \
-    )" && \
-    apk add --no-cache --virtual .run-deps $runDeps && \
 
     cd /tmp && \
     curl -sSL $OBFS_URL | tar xz --strip 1 && \
     ./autogen.sh && \
     ./configure --prefix=/usr --disable-documentation && \
     make install && \
-    cd .. && \
 
-    runDeps="$( \
+    runDepsSS="$( \
+        scanelf --needed --nobanner /usr/bin/ss-* \
+            | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
+            | xargs -r apk info --installed \
+            | sort -u \
+    )" && \
+    runDepsOBFS="$( \
         scanelf --needed --nobanner /usr/bin/obfs-* \
             | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
             | xargs -r apk info --installed \
             | sort -u \
     )" && \
-    apk add --no-cache --virtual .run-deps $runDeps && \
 
-    apk del --purge \
-                    .build-deps \
-                    autoconf \
-                    automake \
-                    build-base \
-                    curl \
-                    libev-dev \
-                    libtool \
-                    linux-headers \
-                    libsodium-dev \
-                    mbedtls-dev \
-                    openssl-dev \
-                    pcre-dev \
-                    tar \
-                    c-ares-dev && \
-    rm -rf /tmp/* /var/cache/apk/*
+    apk add --no-cache --virtual .run-deps $( \
+        echo $runDepsSS $runDepsOBFS \
+            | tr ' ' '\n' \
+            | sort -u \
+    ) && \
+    apk del --purge .build-deps && \
+    rm -rf /tmp/*
 
 USER nobody
 
