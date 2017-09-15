@@ -1,7 +1,7 @@
 ### Source
 - https://github.com/chenhw2/Dockers/tree/ss-obfs
   
-### Thanks to
+### Thanks
 - https://github.com/shadowsocks/shadowsocks-libev
 - https://github.com/shadowsocks/simple-obfs
   
