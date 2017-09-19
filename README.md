@@ -1,7 +1,7 @@
 ### Source
 - https://github.com/chenhw2/Dockers/tree/KCPTUN
   
-### Thanks to
+### Thanks
 - https://github.com/xtaci/kcptun
   
 ### Usage
