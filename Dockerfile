@@ -59,13 +59,13 @@ RUN set -ex && \
     apk del --purge .build-deps && \
     rm -rf /tmp/*
 
-USER nobody
+# USER nobody
 
 ENV SERVER_PORT=8388 \
     METHOD=chacha20-ietf-poly1305 \
     TIMEOUT=120
 ENV PASSWORD=''
-ENV ARGS=''
+ENV ARGS='-a nobody'
 
 EXPOSE $SERVER_PORT/tcp $SERVER_PORT/udp
 
@@ -75,5 +75,7 @@ CMD ss-server \
  -k ${PASSWORD:-$(hostname)} \
  -m $METHOD \
  -t $TIMEOUT \
- --fast-open -u \
+ --fast-open \
+ --no-delay \
+ -u \
  ${ARGS:--d 8.8.8.8}
