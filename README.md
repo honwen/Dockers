@@ -1,8 +1,8 @@
 ### Source
 - https://github.com/chenhw2/Dockers/tree/SSR-KCP-SERVER
   
-### Thanks to
-- https://github.com/shadowsocksr/shadowsocksr
+### Thanks
+- https://github.com/shadowsocksrr/shadowsocksr
 - https://github.com/xtaci/kcptun
   
 ### Usage
