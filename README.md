@@ -19,11 +19,19 @@ $ docker run -d \
 ### ENV
 ```
 # ssr://protocol:method:obfs:pass
-ENV SSR=ssr://origin:aes-256-cfb:tls1.2_ticket_auth_compatible:12345678
-ENV SSR_OBFS_PARAM=bing.com
+ENV SSR=ssr://origin:chacha20-ietf:http_post_compatible:12345678
+ENV SSR_OBFS_PARAM=alibabagroup.com
 
 # kcp://mode:crypt:key
 ENV KCP=cp://fast2:aes:
 ENV KCP_EXTRA_ARGS=''
 
 ```
+
+### 参考配置
+---
+   键名           | 数据类型   | 说明
+   ---------------|------------|-----------------------------------------------
+   protocol       | 字符串     | [协议插件][P], 推荐使用 ```orgin, auth_aes128_{md5, sha1}, auth_chain_{a, b, c, d, e, f}```
+   obfs           | 字符串     | [混淆插件][P], 推荐使用 ```plain, http_{simple, post}, tls1.2_ticket_auth```
+

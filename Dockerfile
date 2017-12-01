@@ -24,9 +24,9 @@ RUN mkdir -p ${RUN_ROOT}/kcptun \
     && rm client_* \
     && mv server_* server
 
-ENV SSR=ssr://origin:aes-256-cfb:tls1.2_ticket_auth_compatible:12345678 \
-    SSR_REDIRECT='["bing.com:80","www.alibaba.co.jp:80","cloudflare.com:443"]' \
-    SSR_OBFS_PARAM=bing.com \
+ENV SSR=ssr://origin:chacha20-ietf:http_post_compatible:12345678 \
+    SSR_REDIRECT='["www.alibabagroup.com:80","www.alibabacloud.com:80","www.alibaba.co.jp:80"]' \
+    SSR_OBFS_PARAM=alibabagroup.com \
     SSR_PROTOCOL_PARAM=''
 
 ENV KCP=kcp://fast2:aes: \
