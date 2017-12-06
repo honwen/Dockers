@@ -1,7 +1,7 @@
 ### Source
 - https://github.com/chenhw2/Dockers/tree/FRP
   
-### Thanks to
+### Thanks
 - https://github.com/fatedier/frp
   
 ### Usage
