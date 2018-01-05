@@ -3,7 +3,7 @@
 #
 FROM chenhw2/libev-build:latest as builder
 
-FROM chenhw2/alpine:base
+FROM busybox:glibc
 MAINTAINER CHENHW2 <https://github.com/chenhw2>
 
 COPY --from=builder /usr/bin/ss-* /usr/bin/
