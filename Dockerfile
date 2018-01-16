@@ -5,7 +5,7 @@ FROM ubuntu:16.04 as builder
 
 ARG BUILD_GIST=https://gist.github.com/chenhw2/e57359378cd4699d19d10eb34f8069b4
 
-RUN apt-get update && apt-get install build-essential automake autoconf libtool wget git clang -yqq
+RUN apt update && apt install build-essential automake autoconf libtool wget git clang -yqq
 RUN set -ex && cd / && \
     git clone $BUILD_GIST --depth 1 /build && \
     sed '/_proxy/d' /build/*.sh > /build.sh && \
