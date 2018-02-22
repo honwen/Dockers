@@ -46,16 +46,18 @@ ssr2json ${SSR} "${SSR_REDIRECT}" ${SSR_OBFS_PARAM} ${SSR_PROTOCOL_PARAM} > ${ss
 # Gen kcp_conf
 kcp2cmd(){
   kcp=$1
-  kcp_extra_agrs=$2
   cmd='--mode \1 --crypt \2'
   cli=$(echo ${kcp} | sed "s#kcp://\([^:]*\):\([^:]*\):\([^:]*\).*#${cmd}#g")
   key=$(echo ${kcp} | sed "s#kcp://\([^:]*\):\([^:]*\):\([^:]*\).*#\3#g")
   [ "Z${key}" = 'Z' ] || cli=$(echo "${cli} --key ${key}")
-  echo "${cli} ${kcp_extra_agrs}"
+  echo "${cli}"
 }
 
-kcp_cmd=$(kcp2cmd ${KCP} ${KCP_EXTRA_ARGS})
-
+if [ "Z${KCP_EXTRA_ARGS}" = "Z" ]; then
+  kcp_cmd=$(kcp2cmd ${KCP})
+else
+  kcp_cmd="${KCP_EXTRA_ARGS}"
+fi
 
 # Gen supervisord.conf
 cat > ${cmd_conf} <<EOF

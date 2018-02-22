@@ -23,9 +23,9 @@ ENV SSR=ssr://origin:chacha20-ietf:http_post_compatible:12345678
 ENV SSR_OBFS_PARAM=alibabagroup.com
 
 # kcp://mode:crypt:key
-ENV KCP=cp://fast2:aes:
+# KCP will be ignored while KCP_EXTRA_ARGS is NOT enpty
+ENV KCP=kcp://fast2:aes:
 ENV KCP_EXTRA_ARGS=''
-
 ```
 
 ### 参考配置
@@ -35,3 +35,4 @@ ENV KCP_EXTRA_ARGS=''
    protocol       | 字符串     | [协议插件][P], 推荐使用 ```orgin, auth_aes128_{md5, sha1}, auth_chain_{a, b, c, d, e, f}```
    obfs           | 字符串     | [混淆插件][P], 推荐使用 ```plain, http_{simple, post}, tls1.2_ticket_auth```
 
+  [P]: https://github.com/shadowsocksrr/shadowsocks-rss/blob/master/ssr.md
