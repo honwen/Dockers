@@ -5,9 +5,9 @@ RUN apk add --update --no-cache python libsodium supervisor \
     && rm -rf /var/cache/apk/*
 
 ENV RUN_ROOT=/ssr
-ARG SSR_VER=b31885113aa95e0ba96cf9fa6a5b91d6c359364c
+ARG SSR_VER=063ce5d0ef526b01566f678b81964bfbb7097d2a
 ARG SSR_URL=https://github.com/shadowsocksrr/shadowsocksr/archive/${SSR_VER}.tar.gz
-ARG KCP_VER=20171201
+ARG KCP_VER=20180316
 ARG KCP_URL=https://github.com/xtaci/kcptun/releases/download/v${KCP_VER}/kcptun-linux-amd64-${KCP_VER}.tar.gz
 
 # /ssr/shadowsocks/server.py
