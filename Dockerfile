@@ -3,13 +3,13 @@
 #
 FROM chenhw2/libev-build:latest as builder
 
-FROM debian:stretch-slim
+FROM chenhw2/debian:base
 LABEL MAINTAINER="https://github.com/chenhw2/Dockers"
 
-RUN set -ex && cd / && \
-    apt update && \
-    apt dist-upgrade && \
-    apt install iptables openvpn -y
+RUN set -ex && cd / \
+    && apt-get update \
+    && apt-get -y dist-upgrade \
+    && apt-get install -y --no-install-recommends iptables openvpn
 
 COPY --from=builder /usr/bin/*s-server /usr/bin/
 
