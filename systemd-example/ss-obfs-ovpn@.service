@@ -1,11 +1,10 @@
 # example: /etc/ss-obfs-ovpn.env
 #
-# PASSWORD=your-password
-# ARGS=--plugin obfs-server --plugin-opts obfs=http;failover=cloudfront.com
+# SS_ARGS=AEAD_AES_128_GCM:your-password
 # NIC=10.9.8.0
 #
 
-# example: /etc/systemd/system/ss-obfs-ovpn@8388.service
+# example: /etc/systemd/system/ss-obfs-ovpn@8080.service
 
 [Unit]
 Description=Container of ss-obfs-ovpn-%I
@@ -16,7 +15,7 @@ Type=simple
 Restart=always
 # ExecStartPre=-/usr/bin/docker pull chenhw2/ss-obfs-ovpn
 ExecStartPre=-/usr/bin/docker rm -f ss-obfs-ovpn-%I
-ExecStart=/usr/bin/docker run --rm --name ss-obfs-ovpn-%I --env-file /etc/ss-obfs-ovpn.env --cap-add NET_ADMIN --cap-add NET_RAW --device /dev/net/tun:/dev/net/tun -p %I:8388/tcp chenhw2/ss-obfs-ovpn
+ExecStart=/usr/bin/docker run --rm --name ss-obfs-ovpn-%I --env-file /etc/ss-obfs-ovpn.env --cap-add NET_ADMIN --cap-add NET_RAW --device /dev/net/tun:/dev/net/tun -p %I:8488/tcp chenhw2/ss-obfs-ovpn
 ExecStop=-/usr/bin/docker kill ss-obfs-ovpn-%I
 ExecStopPost=-/usr/bin/docker rm -f ss-obfs-ovpn-%I
 
