@@ -4,7 +4,7 @@ RUN go get github.com/txthinking/brook/cli/brook
 
 
 FROM chenhw2/alpine:base
-MAINTAINER CHENHW2 <https://github.com/chenhw2>
+LABEL MAINTAINER CHENHW2 <https://github.com/chenhw2>
 
 # /usr/bin/brook
 COPY --from=builder /go/bin /usr/bin
