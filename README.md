@@ -1,21 +1,20 @@
 ### Source
-- https://github.com/chenhw2/Dockers/tree/ss-obfs-ovpn
+- https://github.com/chenhw2/Dockers/tree/ssvpn
   
 ### Thanks
-- https://github.com/shadowsocks/shadowsocks-libev
-- https://github.com/shadowsocks/simple-obfs
+- https://github.com/shadowsocks/go-shadowsocks2
 - https://openvpn.net
   
 ### Usage
 ```
-$ docker pull chenhw2/ss-obfs-ovpn
+$ docker pull chenhw2/ssvpn
 
 $ docker run -d \
     --cap-add NET_ADMIN --cap-add NET_RAW --device /dev/net/tun:/dev/net/tun
     -e 'PASSWORD=12345678' \
     -e 'ARGS=--plugin obfs-server --plugin-opts obfs=http;failover=www.cloudfront.com' \
     -p 8388:8388/tcp -p 8388:8388/udp \
-    chenhw2/ss-obfs-ovpn
+    chenhw2/ssvpn
 ```
   
 ### ENV
@@ -29,6 +28,6 @@ ENV NIC=10.9.8.0
 
 ### Client
 ```
-ss-tunnel -c /path/to/ss_cfg.json -l 1194 -L 127.0.0.1:1194
-openvpn --dev tun --remote 127.0.0.1 --proto tcp-client --port 1194 --mssfix 1472  --comp-lzo no --ifconfig 10.9.8.2 10.9.8.1
+/usr/bin/ss-aio -c ss://AEAD_... -tcptun :1194=127.0.0.1:1194
+openvpn --dev tun --remote 127.0.0.1 --proto tcp-client --port 1194 --ifconfig 10.9.8.2 10.9.8.1
 ```
