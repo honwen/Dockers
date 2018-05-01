@@ -1,5 +1,5 @@
 ### Source
-- https://github.com/chenhw2/Dockers/tree/FRP
+- https://github.com/chenhw2/Dockers/tree/frp
   
 ### Thanks
 - https://github.com/fatedier/frp
@@ -11,7 +11,7 @@ $ docker pull chenhw2/frp
 $ docker run -d \
     -e "ARGS=frps" \
     -v path_to_frps.ini:/frp/frps.ini \
-    -p 7000:7000/tcp -p 7000:7000/udp \
+    --net host \
     chenhw2/frp
 
 $ docker run -d \
