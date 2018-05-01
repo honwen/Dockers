@@ -1,5 +1,5 @@
 ### Source
-- https://github.com/chenhw2/Dockers/tree/KCPTUN
+- https://github.com/chenhw2/Dockers/tree/kcptun
   
 ### Thanks
 - https://github.com/xtaci/kcptun
