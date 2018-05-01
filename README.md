@@ -1,5 +1,5 @@
 ### Source
-- https://github.com/chenhw2/Dockers/tree/SSR-KCP-SERVER
+- https://github.com/chenhw2/Dockers/tree/ssr-kcp-server
   
 ### Thanks
 - https://github.com/shadowsocksrr/shadowsocksr

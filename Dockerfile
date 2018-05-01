@@ -1,11 +1,11 @@
 FROM chenhw2/alpine:base
-MAINTAINER CHENHW2 <https://github.com/chenhw2>
+LABEL MAINTAINER CHENHW2 <https://github.com/chenhw2>
 
 RUN apk add --update --no-cache python libsodium supervisor \
     && rm -rf /var/cache/apk/*
 
 ENV RUN_ROOT=/ssr
-ARG SSR_VER=063ce5d0ef526b01566f678b81964bfbb7097d2a
+ARG SSR_VER=55c0e5780673dcff53bd3356a871b40ce9509d92
 ARG SSR_URL=https://github.com/shadowsocksrr/shadowsocksr/archive/${SSR_VER}.tar.gz
 ARG KCP_VER=20180316
 ARG KCP_URL=https://github.com/xtaci/kcptun/releases/download/v${KCP_VER}/kcptun-linux-amd64-${KCP_VER}.tar.gz
