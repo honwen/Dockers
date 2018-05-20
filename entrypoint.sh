@@ -6,7 +6,7 @@ echo "NET: ${prefix}0/24 --ifconfig ${prefix}1 ${prefix}2"
 
 iptables -t nat -I POSTROUTING -s "${prefix}0/24" -j MASQUERADE
 
-openvpn --dev tun --proto tcp-server --ifconfig ${prefix}1 ${prefix}2 2>&1 > /var/ovpn-tcp.log &
+openvpn --dev tun --proto tcp-server --ifconfig ${prefix}1 ${prefix}2 --keepalive 10 120 2>&1 > /var/ovpn-tcp.log &
 
 ss-aio -s ss://${SS_ARGS}@:8488 2>&1 > /var/ovpn-ss.log
 
