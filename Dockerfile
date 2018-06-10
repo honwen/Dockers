@@ -1,11 +1,11 @@
 #
 # Dockerfile for shadowsocks-libev and simple-obfs
 #
-FROM ubuntu:16.04 as builder
+FROM alpine:3.7 as builder
 
 ARG BUILD_GIST=https://gist.github.com/chenhw2/e57359378cd4699d19d10eb34f8069b4
 
-RUN apt update && apt install build-essential automake autoconf libtool wget curl git clang -yqq
+RUN apk --update add --no-cache wget curl git bash build-base linux-headers clang autoconf automake libtool
 RUN set -ex && cd / && \
     git clone $BUILD_GIST --depth 1 /build && \
     sed '/_proxy/d' /build/*.sh > /build.sh && \
