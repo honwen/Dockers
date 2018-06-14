@@ -6,11 +6,20 @@ echo "#DOMAIN: ${DOMAIN}"
 echo '=================================================='
 echo
 
-# defualt port 1313
-/usr/bin/hugo server -s=/www/${DOMAIN} --baseUrl=${DOMAIN} --appendPort=false &
+# MKDIR Init
+mkdir -p /etc/ssl/caddy /etc/caddy /data/gitea /var/tmp
+
+# Gitea Init
+[ -f /data/gitea/app.ini ] || cat << EOF > /data/gitea/app.ini
+[server]
+HTTP_PORT        = 8080
+DOMAIN           = ${DOMAIN}
+ROOT_URL         = https://${DOMAIN}/
+DISABLE_SSH      = true
+EOF
+/usr/bin/gitea web -c /data/gitea/app.ini &
 
 # Caddy Init
-mkdir -p /etc/ssl/caddy /etc/caddy /var/tmp
 cp 404.html /var/tmp/
 cat << EOF > /etc/caddy/Caddyfile
 :80 {
@@ -24,12 +33,8 @@ ${DOMAIN} {
   tls ssl@${DOMAIN}
   timeouts 30s
   gzip
-  proxy / http://localhost:1313 {
+  proxy / http://localhost:8080 {
     except /404.html
-  }
-  redir {
-  if {path} not_match (/$|/css|/post|/404.html$)
-    / /404.html
   }
 }
 EOF
@@ -37,3 +42,4 @@ EOF
 # defualt port 80 443
 export CADDYPATH=/etc/ssl/caddy
 /usr/bin/caddy -log stdout -agree=true -conf=/etc/caddy/Caddyfile -root=/var/tmp
+

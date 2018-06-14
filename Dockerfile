@@ -1,14 +1,24 @@
-FROM golang:alpine as builder
-RUN apk add --update git
-RUN go get -u -v github.com/gohugoio/hugo github.com/mholt/caddy/caddy
+FROM gitea/gitea:latest    as gitea
+FROM abiosoft/caddy:latest as caddy
 
 FROM chenhw2/alpine:base
 LABEL MAINTAINER="https://github.com/chenhw2"
+RUN apk add --update --no-cache git && rm -rf /var/cache/apk/*
 
-# /usr/bin/{hugo, caddy}
-COPY --from=builder /go/bin/* /usr/bin/
+RUN set -ex && \
+  addgroup -S -g 1000 git && \
+  adduser -S -H -D -h /data/git -s /bin/nologin -u 1000 -G git git && \
+  echo "git:$(dd if=/dev/urandom bs=24 count=1 status=none | base64)" | chpasswd
 
+# /usr/bin/{gitea, caddy}
+COPY --from=gitea /app/gitea/gitea /usr/bin/
+COPY --from=caddy /usr/bin/caddy   /usr/bin/
+
+ENV USER=git \
+    GITEA_CUSTOM=/data/gitea
 ENV DOMAIN=example.com
+
+VOLUME ["/data"]
 
 EXPOSE 80/tcp 443/tcp
 
