@@ -1,8 +1,8 @@
 #
-# Alpine 3.7 CURL, WGET, HTTPS, HKT_TIMEZONE
+# Alpine 3.8 CURL, WGET, HTTPS, HKT_TIMEZONE
 #
 
-FROM alpine:3.7
+FROM alpine:3.8
 
 ARG TZ=Asia/Hong_Kong
 
