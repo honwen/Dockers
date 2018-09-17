@@ -1,5 +1,5 @@
 ### Source
-- https://github.com/chenhw2/Dockers/tree/GOST
+- https://github.com/chenhw2/Dockers/tree/gost
   
 ### Thanks to
 - https://github.com/ginuerzh/gost
