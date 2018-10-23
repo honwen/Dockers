@@ -3,6 +3,7 @@
   
 ### Thanks
 - https://github.com/shadowsocks/go-shadowsocks2
+- https://github.com/wangyu-/UDPspeeder
 - https://openvpn.net
   
 ### Usage
@@ -11,23 +12,19 @@ $ docker pull chenhw2/ssvpn
 
 $ docker run -d \
     --cap-add NET_ADMIN --cap-add NET_RAW --device /dev/net/tun:/dev/net/tun
-    -e 'PASSWORD=12345678' \
-    -e 'ARGS=--plugin obfs-server --plugin-opts obfs=http;failover=www.cloudfront.com' \
-    -p 8388:8388/tcp -p 8388:8388/udp \
+    -e 'SS_ARGS=AEAD_AES_128_GCM:your-password' \
+    -p 8488:8488/tcp -p 8488:8488/udp -p 8499:8499/udp \
     chenhw2/ssvpn
 ```
   
 ### ENV
 ```
-ENV SERVER_PORT 8388
-ENV METHOD      chacha20-ietf-poly1305
-ENV PASSWORD=
-ENV ARGS=
+ENV SS_ARGS=AEAD_AES_128_GCM:your-password
 ENV NIC=10.9.8.0
 ```
 
 ### Client
 ```
 /usr/bin/ss-aio -c ss://AEAD_... -tcptun :1194=127.0.0.1:1194
-openvpn --dev tun --remote 127.0.0.1 --proto tcp-client --port 1194 --ifconfig 10.9.8.2 10.9.8.1
+openvpn --dev tun --remote 127.0.0.1 --proto tcp-client --port 1194 --ifconfig 10.9.8.2 10.9.8.1 --keepalive 10 120
 ```
