@@ -21,6 +21,5 @@ ENV SS_ARGS='AEAD_CHACHA20_POLY1305:ssVPN' \
 EXPOSE 8488/tcp 8488/udp 8499/udp
 
 ADD entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
