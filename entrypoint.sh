@@ -33,7 +33,11 @@ ${DOMAIN} {
   tls ssl@${DOMAIN}
   timeouts 30s
   gzip
+  proxy /ws-conn http://localhost:8888 {
+    websocket
+  }
   proxy / http://localhost:8080 {
+    except /ws-conn
     except /404.html
   }
 }
@@ -42,4 +46,3 @@ EOF
 # defualt port 80 443
 export CADDYPATH=/etc/ssl/caddy
 /usr/bin/caddy -log stdout -agree=true -conf=/etc/caddy/Caddyfile -root=/var/tmp
-
