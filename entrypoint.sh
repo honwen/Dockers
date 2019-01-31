@@ -24,12 +24,12 @@ ${DOMAIN} {
   tls ssl@${DOMAIN}
   timeouts 30s
   gzip
-  proxy / http://localhost:1313 {
-    except /404.html
+  proxy /ws-conn http://localhost:8888 {
+    websocket
   }
-  redir {
-  if {path} not_match (/$|/css|/post|/404.html$)
-    / /404.html
+  proxy / http://localhost:1313 {
+    except /ws-conn
+    except /404.html
   }
 }
 EOF
