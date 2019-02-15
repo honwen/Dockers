@@ -9,8 +9,8 @@
 $ docker pull chenhw2/softethervpn
 
 $ docker run -d --env-file /etc/vpn.env \
-    -p 500:500/udp -p 4500:4500/udp -p 1701:1701/udp \
-     -p 5555:5555/tcp chenhw2/softethervpn
+    -p 500:500/udp -p 4500:4500/udp -p 1701:1701/udp -p 5555:5555/tcp \
+    chenhw2/softethervpn
 ```
 
 Mix and match published ports: 

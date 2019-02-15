@@ -12,20 +12,11 @@ fi
 echo "# $USERS"
 
 # config generate
-/etc/init.d/softether-vpnserver start >/dev/null 2>&1
-until vpncmd localhost /SERVER /CSV /CMD ServerInfoGet >/dev/null 2>&1 ; do :; done
-/etc/init.d/softether-vpnserver stop >/dev/null 2>&1
-
-# disable DDNS
-ll=$(sed -ne '/DDnsClient/=' /usr/libexec/softether/vpnserver/vpn_server.config)
-sed "$ll,$((ll + 10))s/Disabled false/Disabled true/g" -i /usr/libexec/softether/vpnserver/vpn_server.config
-
-# offical start server
-/etc/init.d/softether-vpnserver start >/dev/null 2>&1
+vpnserver start >/dev/null 2>&1
 until vpncmd localhost /SERVER /CSV /CMD ServerInfoGet >/dev/null 2>&1 ; do :; done
 
 # chiper and cert
-vpncmd localhost /SERVER /CSV /CMD ServerCipherSet TLS_AES_128_GCM_SHA256
+vpncmd localhost /SERVER /CSV /CMD ServerCipherSet ECDHE-RSA-AES128-GCM-SHA256
 vpncmd localhost /SERVER /CSV /CMD ServerCertRegenerate SVPN >/dev/null
 
 # enable L2TP_IPsec
@@ -69,7 +60,12 @@ else
   echo -e "\n# Initialized with [HubPassword: ${HPW}] [ServerPassword: ${SPW}]"
 fi
 
+# stop and save config
+vpnserver stop >/dev/null 2>&1
 
-## SPEEDER
-ss-aio -s ss://${SS_ARGS:-AEAD_AES_128_GCM:ssPWD}@:8488 2>&1 > /var/01_ss.log &
-udp-speeder -s -l 0.0.0.0:8499 -r 127.0.0.1:8488 2>&1 > /var/02_udp-speeder.log
+# disable DDNS
+cfg=$(find / -name vpn_server.config)
+ll=$(sed -ne '/DDnsClient/=' $cfg)
+sed "$ll,$((ll + 10))s/Disabled false/Disabled true/g" -i $cfg
+
+exec "$@" 2>>/var/log/error
