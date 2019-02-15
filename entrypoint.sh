@@ -13,19 +13,22 @@ echo "# $USERS"
 
 # config generate
 vpnserver start >/dev/null 2>&1
-until vpncmd localhost /SERVER /CSV /CMD ServerInfoGet >/dev/null 2>&1 ; do :; done
+until vpncmd localhost /SERVER /CSV /CMD ServerInfoGet >/dev/null 2>&1; do :; done
 
 # chiper and cert
 vpncmd localhost /SERVER /CSV /CMD ServerCipherSet ECDHE-RSA-AES128-GCM-SHA256
 vpncmd localhost /SERVER /CSV /CMD ServerCertRegenerate SVPN >/dev/null
 
-# enable L2TP_IPsec
-vpncmd localhost /SERVER /CSV /CMD IPsecEnable /L2TP:yes /L2TPRAW:yes /ETHERIP:no /PSK:${PSK} /DEFAULTHUB:DEFAULT
-
-# enable OpenVPN
+# enable OpenVPN/UDP
+echo '# Enable OpenVPN/UDP'
 vpncmd localhost /SERVER /CSV /CMD OpenVpnEnable yes /PORTS:1194
 
+# enable L2TP/IPsec
+echo $VPN | grep -q L2TP && echo '# Enable L2TP/IPsec' && \
+vpncmd localhost /SERVER /CSV /CMD IPsecEnable /L2TP:yes /L2TPRAW:yes /ETHERIP:no /PSK:${PSK} /DEFAULTHUB:DEFAULT
+
 # enable SstpVPN
+echo $VPN | grep -q SSTP && echo '# Enable SSTP-VPN' && \
 vpncmd localhost /SERVER /CSV /CMD SstpEnable yes
 
 # enable SecureNAT
@@ -51,7 +54,7 @@ done <<< "$USERS"
 
 # set password for hub and server
 if [ "V$DEBUG" == "V1" ]; then
-  echo -e "\n# Initialized with Debug Mode"
+  echo -e "\n# Initialized with Debug/UnSafe Mode"
 else
   : ${HPW:=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 16 | head -n 1)}
   : ${SPW:=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 20 | head -n 1)}
@@ -62,10 +65,13 @@ fi
 
 # stop and save config
 vpnserver stop >/dev/null 2>&1
+while pgrep vpnserver >/dev/null 2>&1; do :; done
+
+echo '# Initialized OK'
 
 # disable DDNS
-cfg=$(find / -name vpn_server.config)
-ll=$(sed -ne '/DDnsClient/=' $cfg)
-sed "$ll,$((ll + 10))s/Disabled false/Disabled true/g" -i $cfg
+__cfg=$(find / -name vpn_server.config)
+__ll=$(sed -ne '/DDnsClient/=' $__cfg)
+sed "$__ll,$((__ll + 10))s/Disabled false/Disabled true/g" -i $__cfg
 
-exec "$@" 2>>/var/log/error
+vpnserver execsvc 2>>/var/log/error
