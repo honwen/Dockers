@@ -18,6 +18,7 @@ RUN set -ex && cd / \
 COPY entrypoint.sh /
 
 ENV VPN="L2TP SSTP" \
+    DNS1=8.8.8.8 \
     PSK=vpn \
     USERS=user0001:password
 
