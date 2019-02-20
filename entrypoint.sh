@@ -36,9 +36,19 @@ ${DOMAIN} {
   proxy /ws-conn http://localhost:8888 {
     websocket
   }
+
+$( for i in `seq 0 9`; do
+cat << FOO
+  proxy /ws-conn${i} http://localhost:777${i} {
+    websocket
+  }
+FOO
+   done )
+
   proxy / http://localhost:8080 {
-    except /ws-conn
     except /404.html
+    except /ws-conn
+$(seq 0 9 | sed  's;^;    except /ws-conn;g')
   }
 }
 EOF

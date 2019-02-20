@@ -23,6 +23,5 @@ VOLUME ["/data"]
 EXPOSE 80/tcp 443/tcp
 
 ADD entrypoint.sh 404.html /
-RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
