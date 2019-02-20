@@ -21,6 +21,7 @@ EOF
 
 # Caddy Init
 cp 404.html /var/tmp/
+host_ip=$(route | awk '/^default/ { print $2 }')
 cat << EOF > /etc/caddy/Caddyfile
 :80 {
   redir {
@@ -33,13 +34,13 @@ ${DOMAIN} {
   tls ssl@${DOMAIN}
   timeouts 30s
   gzip
-  proxy /ws-conn http://localhost:8888 {
+  proxy /ws-conn http://${host_ip}:8888 {
     websocket
   }
 
 $( for i in `seq 0 9`; do
 cat << FOO
-  proxy /ws-conn${i} http://localhost:777${i} {
+  proxy /ws-conn${i} http://${host_ip}:777${i} {
     websocket
   }
 FOO
