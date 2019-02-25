@@ -1,11 +1,10 @@
 [Unit]
-Description=Container of Gitea-%I
+Description=Gitea-%I
 After=docker.service
-PartOf=docker.service
 
 [Service]
-Type=simple
 Restart=always
+RestartSec=45
 ExecStartPre=-/usr/bin/docker rm -f gitea-%I
 ExecStart=/usr/bin/docker run --rm --name gitea-%I -e DOMAIN=%I -v /etc/ssl/caddy:/etc/ssl/caddy -v /var/gitea-data:/data -p 127.0.0.1:8080:80 -p 443:443 chenhw2/gitea:latest
 ExecStop=-/usr/bin/docker rm -f gitea-%I

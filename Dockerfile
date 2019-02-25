@@ -6,17 +6,18 @@ LABEL MAINTAINER="https://github.com/chenhw2"
 RUN apk add --update --no-cache git && rm -rf /var/cache/apk/*
 
 RUN set -ex && \
-  addgroup -S -g 1000 git && \
-  adduser -S -H -D -h /data/git -s /bin/nologin -u 1000 -G git git && \
-  echo "git:$(dd if=/dev/urandom bs=24 count=1 status=none | base64)" | chpasswd
+    addgroup -S -g 1000 git && \
+    adduser -S -H -D -h /data/git -s /bin/nologin -u 1000 -G git git && \
+    echo "git:$(dd if=/dev/urandom bs=24 count=1 status=none | base64)" | chpasswd
 
 # /usr/bin/{gitea, caddy}
 COPY --from=gitea /app/gitea/gitea /usr/bin/
 COPY --from=caddy /usr/bin/caddy   /usr/bin/
 
-ENV USER=git \
-    GITEA_CUSTOM=/data/gitea
-ENV DOMAIN=example.com
+ENV DOMAIN=example.com \
+    USER=git \
+    GITEA_CUSTOM=/data/gitea \
+    WS_PREFIX=/websocket
 
 VOLUME ["/data"]
 

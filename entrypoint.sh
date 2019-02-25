@@ -12,10 +12,10 @@ mkdir -p /etc/ssl/caddy /etc/caddy /data/gitea /var/tmp
 # Gitea Init
 [ -f /data/gitea/app.ini ] || cat << EOF > /data/gitea/app.ini
 [server]
-HTTP_PORT        = 8080
-DOMAIN           = ${DOMAIN}
-ROOT_URL         = https://${DOMAIN}/
-DISABLE_SSH      = true
+HTTP_PORT    = 8080
+DOMAIN       = ${DOMAIN}
+ROOT_URL     = https://${DOMAIN}/
+DISABLE_SSH  = true
 EOF
 /usr/bin/gitea web -c /data/gitea/app.ini &
 
@@ -34,13 +34,13 @@ ${DOMAIN} {
   tls ssl@${DOMAIN}
   timeouts 30s
   gzip
-  proxy /ws-conn http://${host_ip}:8888 {
+  proxy ${WS_PREFIX} http://${host_ip}:8888 {
     websocket
   }
 
 $( for i in `seq 0 9`; do
 cat << FOO
-  proxy /ws-conn${i} http://${host_ip}:777${i} {
+  proxy ${WS_PREFIX}${i} http://${host_ip}:777${i} {
     websocket
   }
 FOO
@@ -48,8 +48,7 @@ FOO
 
   proxy / http://localhost:8080 {
     except /404.html
-    except /ws-conn
-$(seq 0 9 | sed  's;^;    except /ws-conn;g')
+    except ${WS_PREFIX}.*
   }
 }
 EOF
