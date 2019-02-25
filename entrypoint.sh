@@ -2,7 +2,9 @@
 
 # ENV DOMAIN=example.com
 
-echo "#DOMAIN: ${DOMAIN}"
+EXTRA_DOMAINS="$(echo ${EXTRA_DOMAINS} | grep -v 'example.com' | sed 's;[,;]; ;g')"
+
+echo "#DOMAIN: ${DOMAIN} ${EXTRA_DOMAINS}"
 echo '=================================================='
 echo
 
@@ -30,6 +32,14 @@ cat << EOF > /etc/caddy/Caddyfile
   }
 }
 
+$( if echo ${EXTRA_DOMAINS} | grep -q '.'; then
+cat << FOO
+${EXTRA_DOMAINS} {
+  redir {scheme}://${DOMAIN}{uri}
+}
+FOO
+fi )
+
 ${DOMAIN} {
   tls ssl@${DOMAIN}
   timeouts 30s
@@ -44,7 +54,7 @@ cat << FOO
     websocket
   }
 FOO
-   done )
+done )
 
   proxy / http://localhost:8080 {
     except /404.html

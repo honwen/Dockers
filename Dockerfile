@@ -15,6 +15,7 @@ COPY --from=gitea /app/gitea/gitea /usr/bin/
 COPY --from=caddy /usr/bin/caddy   /usr/bin/
 
 ENV DOMAIN=example.com \
+    EXTRA_DOMAINS=www.example.com,git.example.com \
     USER=git \
     GITEA_CUSTOM=/data/gitea \
     WS_PREFIX=/websocket
