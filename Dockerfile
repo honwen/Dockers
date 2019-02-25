@@ -18,8 +18,7 @@ COPY --from=us /usr/bin/udp-speeder /usr/bin/
 COPY --from=plugin /usr/bin/v2ray-plugin /usr/bin/
 
 ENV SS_ARGS='AEAD_CHACHA20_POLY1305:ssVPN' \
-    V2_HOST='example.com' \
-    V2_PATH='/websocket' \
+    WS_PATH='/websocket' \
     MODE=''
 
 EXPOSE 1984/tcp 8488/tcp 8488/udp 8499/udp
