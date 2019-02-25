@@ -8,7 +8,9 @@ LABEL MAINTAINER="https://github.com/chenhw2"
 # /usr/bin/{hugo, caddy}
 COPY --from=builder /go/bin/* /usr/bin/
 
-ENV DOMAIN=example.com
+ENV DOMAIN="example.com" \
+    EXTRA_DOMAINS="www.example.com,hugo.example.com" \
+    WS_PREFIX=/websocket
 
 EXPOSE 80/tcp 443/tcp
 
