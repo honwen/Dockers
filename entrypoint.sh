@@ -11,7 +11,8 @@ fi
 
 echo "# $USERS"
 
-# config generate
+# config re-generate
+rm -f $(find / -name vpn_server.config) >/dev/null 2>&1
 vpnserver start >/dev/null 2>&1
 until vpncmd localhost /SERVER /CSV /CMD ServerInfoGet >/dev/null 2>&1; do :; done
 
