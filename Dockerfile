@@ -1,5 +1,5 @@
 FROM gitea/gitea:latest    as gitea
-FROM abiosoft/caddy:latest as caddy
+FROM abiosoft/caddy:no-stats as caddy
 
 FROM chenhw2/alpine:base
 LABEL MAINTAINER="https://github.com/chenhw2"
