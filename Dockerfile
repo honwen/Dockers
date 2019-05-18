@@ -1,6 +1,6 @@
 FROM golang:alpine as builder
 RUN apk add --update git
-RUN go get github.com/txthinking/mr2
+RUN go get github.com/txthinking/mr2/cli/mr2
 
 
 FROM chenhw2/alpine:base
