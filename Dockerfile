@@ -1,7 +1,7 @@
 FROM chenhw2/alpine:base
 LABEL MAINTAINER CHENHW2 <https://github.com/chenhw2>
 
-ARG FRP_VER=0.29.0
+ARG FRP_VER=0.30.0
 ARG FRP_URL=https://github.com/fatedier/frp/releases/download/v${FRP_VER}/frp_${FRP_VER}_linux_amd64.tar.gz
 
 # /usr/bin/{frps, frpc}
