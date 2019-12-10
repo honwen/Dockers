@@ -75,7 +75,7 @@ Proxy Group:
 - { name: "Proxy", type: url-test,
 proxies: [
 $(cat ${yaml}_group)],
-url: "http://www.gstatic.com/generate_204", interval: 300 }
+url: "${TEST_URL}", interval: 300 }
 
 Rule:
 $(sed "1,$(sed -n -e '/^Rule/=' Hackl0us_clash.yaml)d" Hackl0us_clash.yaml)

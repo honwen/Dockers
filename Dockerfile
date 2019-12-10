@@ -20,7 +20,8 @@ RUN set -ex \
     && mv */GeoLite*.mmdb Country.mmdb \
     && rm -rf GeoLite*
 
-ENV URL=https://subscribe.entrypoint\
+ENV URL=https://subscribe.entrypoint \
+    TEST_URL="http://www.gstatic.com/generate_204" \
     DNS_SAFE="sdns://AgcAAAAAAAAADjEwNy4xNTUuNzkuMTIwABB1cy1kbnMuMjMzcHkuY29tCi9kbnMtcXVlcnk;tls://8.8.8.8:853;tls://8.8.4.4:853;https://dns.adguard.com/dns-query" \
     DNS_FAILSAFE="tls://119.29.107.85:853;tls://47.101.136.37:853;tls://114.115.240.175:853"
 
