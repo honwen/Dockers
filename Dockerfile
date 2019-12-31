@@ -25,4 +25,4 @@ EXPOSE 1984/tcp 8488/tcp 8488/udp 8499/udp
 
 ADD entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/entrypoint.sh"]
