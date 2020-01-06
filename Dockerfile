@@ -1,4 +1,4 @@
-FROM siomiz/softethervpn:debian as build
+FROM siomiz/softethervpn:4.28-debian as build
 RUN set -ex && cd / \
     && tar zcvf /binarys.tgz /usr/vpn* /usr/bin/vpn*
 
