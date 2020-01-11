@@ -1,5 +1,5 @@
 ### Source
-- https://github.com/chenhw2/Dockers/tree/ss-obfs
+- https://github.com/honwen/Dockers/tree/ss-obfs
   
 ### Thanks
 - https://github.com/shadowsocks/shadowsocks-libev
@@ -18,12 +18,12 @@ $ docker run -d \
 ```
   
 ### Example
-- https://github.com/chenhw2/Dockers/tree/ss-obfs/example
+- https://github.com/honwen/Dockers/tree/ss-obfs/example
   
 ### ENV
 ```
-ENV SERVER_PORT 8388
-ENV METHOD      chacha20-ietf-poly1305
+ENV SERVER_PORT=8388
+ENV METHOD=chacha20-ietf-poly1305
 ENV PASSWORD=
 ENV Args=
 ```
