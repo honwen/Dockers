@@ -1,7 +1,7 @@
 #
 # Dockerfile for shadowsocks-libev and simple-obfs
 #
-FROM alpine:3.7 as builder
+FROM alpine:3.11 as builder
 
 ARG BUILD_GIST=https://gist.github.com/chenhw2/e57359378cd4699d19d10eb34f8069b4
 

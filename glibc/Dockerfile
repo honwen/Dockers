@@ -1,7 +1,7 @@
 #
 # Dockerfile for shadowsocks-libev and simple-obfs
 #
-FROM ubuntu:16.04 as builder
+FROM ubuntu:20.04 as builder
 
 ARG BUILD_GIST=https://gist.github.com/chenhw2/e57359378cd4699d19d10eb34f8069b4
 
