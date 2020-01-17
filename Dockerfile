@@ -16,7 +16,7 @@ COPY --from=golang /go/bin/* /usr/bin/
 
 RUN set -ex \
     && curl -skSL https://github.com/Hackl0us/SS-Rule-Snippet/raw/master/LAZY_RULES/clash.yaml > Hackl0us_clash.yaml \
-    && curl -skSL http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz | tar zxv \
+    && curl -skSL https://github.com/DocSpring/geolite2-city-mirror/raw/master/GeoLite2-City.tar.gz | tar zxv \
     && mv */GeoLite*.mmdb Country.mmdb \
     && rm -rf GeoLite*
 
