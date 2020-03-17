@@ -72,7 +72,7 @@ done
 cat <<-EOF | sed 's/,],/\n],/g' >> $yaml
 
 Proxy Group:
-- { name: "Proxy", type: url-test,
+- { name: "Proxy", type: ${CLASH_POLICY},
 proxies: [
 $(cat ${yaml}_group)],
 url: "${TEST_URL}", interval: 300 }
