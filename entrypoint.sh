@@ -15,7 +15,7 @@ while ! nslookup www.google.com 2>&1 | grep -q 1e100; do :;done
 
 cat <<-EOF >> $conf
 [program:DNS]
-command=/usr/bin/dnsproxy -z -s -p 53 $DNS_BOOTSTRAP $DNS_FAILSAFE $DNS_SAFE
+command=/usr/bin/dnsproxy -a -z -s --edns -p 53 $DNS_BOOTSTRAP $DNS_FAILSAFE $DNS_SAFE
 autorestart=true
 redirect_stderr=true
 stdout_logfile=$logs/dns.log
@@ -46,7 +46,8 @@ Proxy:
 EOF
 
 port=18000
-shadowsocks-helper subscribe2ssr -s $URL | tr -d ' ' | while read ssr; do
+shadowsocks-helper subscribe2ssr -s $URL | tr -d ' ' > subscribe.list
+grep $SRV_GREP subscribe.list | while read ssr; do
 name=$(echo $ssr | sed 's/:.*//g')
 ssr=$(echo $ssr | sed 's/^[^:]*://g')
 
@@ -75,7 +76,7 @@ Proxy Group:
 - { name: "Proxy", type: ${CLASH_POLICY},
 proxies: [
 $(cat ${yaml}_group)],
-url: "${TEST_URL}", interval: 300 }
+url: "${TEST_URL}", interval: ${CLASH_INTERVAL} }
 
 Rule:
 $(sed "1,$(sed -n -e '/^Rule/=' Hackl0us_clash.yaml)d" Hackl0us_clash.yaml)

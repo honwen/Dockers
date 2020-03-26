@@ -23,6 +23,8 @@ RUN set -ex \
 ENV URL=https://subscribe.entrypoint \
     TEST_URL="http://www.gstatic.com/generate_204" \
     CLASH_POLICY="url-test" \
+    CLASH_INTERVAL="120" \
+    SRV_GREP="ssr://" \
     DNS_SAFE="sdns://AgcAAAAAAAAAACAoPxWWFWiOuUdTdn7SvYpzbNqr_iDmmJrktihy4wca5gxkbnMudHduaWMudHcKL2Rucy1xdWVyeQ;tls://8.8.8.8:853;tls://1.1.1.1:853;https://dns.adguard.com/dns-query" \
     DNS_FAILSAFE="tls://185.222.222.222:853;tls://8.8.4.4:853;tls://1.0.0.1:853"
 
