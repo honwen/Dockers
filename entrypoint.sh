@@ -1,8 +1,7 @@
 #!/bin/sh
 
-# ENV DOMAIN=example.com
-
 EXTRA_DOMAINS="$(echo ${EXTRA_DOMAINS} | grep -v 'example.com' | sed 's;[,;]; ;g')"
+EXTRA_PROXYS="$(echo ${EXTRA_PROXYS} | grep -v 'example.com')"
 
 echo "#DOMAIN: ${DOMAIN} ${EXTRA_DOMAINS}"
 echo '=================================================='
@@ -23,7 +22,7 @@ EOF
 
 # Caddy Init
 cp 404.html /var/tmp/
-host_ip=$(route | awk '/^default/ { print $2 }')
+host_ip=$(route -n | awk '/^0.0.0.0/ { print $2 }')
 cat << EOF > /etc/caddy/Caddyfile
 :80 {
   redir {
@@ -42,7 +41,7 @@ fi )
 
 ${DOMAIN} {
   tls ssl@${DOMAIN}
-  timeouts 30s
+  timeouts 120s
   gzip
   proxy ${WS_PREFIX} http://${host_ip}:8888 {
     websocket
@@ -51,6 +50,15 @@ ${DOMAIN} {
 $( for i in `seq 0 9`; do
 cat << FOO
   proxy ${WS_PREFIX}${i} http://${host_ip}:777${i} {
+    websocket
+  }
+FOO
+done )
+
+$( echo "${EXTRA_PROXYS}" | tr ',' '\n' | while read it; do
+echo $it | grep -q '.' || continue
+cat << FOO
+  proxy ${it} {
     websocket
   }
 FOO
@@ -65,4 +73,5 @@ EOF
 
 # defualt port 80 443
 export CADDYPATH=/etc/ssl/caddy
-/usr/bin/caddy -log stdout -agree=true -conf=/etc/caddy/Caddyfile -root=/var/tmp
+cat /etc/caddy/Caddyfile
+/usr/bin/caddy -log stdout -conf=/etc/caddy/Caddyfile -root=/var/tmp

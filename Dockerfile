@@ -14,11 +14,13 @@ RUN set -ex && \
 COPY --from=gitea /app/gitea/gitea /usr/bin/
 COPY --from=caddy /usr/bin/caddy   /usr/bin/
 
-ENV DOMAIN=example.com \
-    EXTRA_DOMAINS=www.example.com,git.example.com \
+ENV ACME_AGREE=true \
+    DOMAIN=example.com \
+    EXTRA_DOMAINS="www.example.com,git.example.com" \
     USER=git \
     GITEA_CUSTOM=/data/gitea \
-    WS_PREFIX=/websocket
+    WS_PREFIX=/websocket \
+    EXTRA_PROXYS="/example http://git.example.com/git,/git https://www.example.com/example"
 
 VOLUME ["/data"]
 
