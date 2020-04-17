@@ -1,9 +1,12 @@
-#
-# Dockerfile for openvpn, shadowsocks-libev and simple-obfs
-#
-FROM chenhw2/ss-aio:latest as ss
 FROM chenhw2/v2ray-plugin:latest as plugin
 FROM chenhw2/udp-speeder:latest as us
+FROM golang:buster as gost
+ENV CGO_ENABLED=0
+RUN set -ex \
+    && git clone https://github.com/ginuerzh/gost.git \
+    && cd gost/cmd/gost \
+    && go build \
+    && mv gost /usr/bin/
 
 FROM chenhw2/debian:base
 LABEL MAINTAINER="https://github.com/chenhw2/Dockers"
@@ -13,12 +16,12 @@ RUN set -ex && cd / \
     && apt-get -y dist-upgrade \
     && apt-get install -y --no-install-recommends iptables openvpn
 
-COPY --from=ss /usr/bin/ss-aio /usr/bin/
+COPY --from=gost /usr/bin/gost /usr/bin/
 COPY --from=us /usr/bin/udp-speeder /usr/bin/
 COPY --from=plugin /usr/bin/v2ray-plugin /usr/bin/
 
-ENV SS_ARGS='AEAD_CHACHA20_POLY1305:ssVPN' \
-    WS_PATH='/websocket' \
+ENV WS_PATH='/websocket' \
+    GOST_ARGS='' \
     MODE=''
 
 EXPOSE 1984/tcp 8488/tcp 8488/udp 8499/udp
