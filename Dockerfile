@@ -10,6 +10,6 @@ COPY --from=golang /go/bin/* /usr/bin/
 
 # RUN /usr/bin/dnsproxy --version
 
-ENV ARGS="-z -s -p 53 -u tls://8.8.8.8:853 -u tls://8.8.4.4:853"
+ENV ARGS="--cache --refuse-any --edns --all-servers -u tls://1.0.0.1:853 -u tls://8.8.4.4:853"
 
 CMD /usr/bin/dnsproxy ${ARGS}
