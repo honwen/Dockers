@@ -2,14 +2,14 @@ FROM dreamacro/clash as clash
 FROM ochinchina/supervisord as supervisord
 FROM golang:alpine as golang
 RUN apk add --update git
-RUN CGO_ENABLED=0 go get -u -v github.com/honwen/shadowsocks-helper github.com/nadoo/glider github.com/AdguardTeam/dnsproxy
+RUN CGO_ENABLED=0 GO111MODULE=on go get -u -v github.com/honwen/shadowsocks-helper github.com/nadoo/glider github.com/AdguardTeam/dnsproxy
 
 FROM chenhw2/alpine:base
 LABEL MAINTAINER="https://github.com/chenhw2"
 
 WORKDIR /subscribe
 
-# /usr/bin/{clash, glider, supervisord, shadowsocks-helper}
+# /usr/bin/{dnsproxy, clash, glider, supervisord, shadowsocks-helper}
 COPY --from=clash /clash /usr/bin/
 COPY --from=supervisord /usr/local/bin/supervisord /usr/bin/
 COPY --from=golang /go/bin/* /usr/bin/
@@ -25,8 +25,8 @@ ENV URL=https://subscribe.entrypoint \
     CLASH_POLICY="url-test" \
     CLASH_INTERVAL="120" \
     SRV_GREP="ssr://" \
-    DNS_SAFE="sdns://AgcAAAAAAAAAACAoPxWWFWiOuUdTdn7SvYpzbNqr_iDmmJrktihy4wca5gxkbnMudHduaWMudHcKL2Rucy1xdWVyeQ;tls://8.8.8.8:853;tls://1.1.1.1:853;https://dns.adguard.com/dns-query" \
-    DNS_FAILSAFE="tls://185.222.222.222:853;tls://8.8.4.4:853;tls://1.0.0.1:853"
+    DNS_SAFE="tls://185.222.222.222:853;tls://8.8.4.4:853;tls://149.112.112.112:853;sdns://AgMAAAAAAAAADzE3Ni4xMDMuMTMwLjEzMCD5_zfwLmMstzhwJcB-V5CKPTcbfJXYzdA5DeIx7ZQ6Eg9kbnMuYWRndWFyZC5jb20KL2Rucy1xdWVyeQ;sdns://AgMAAAAAAAAADDQ1Ljc3LjE4MC4xMCBsA2QQ3lR1Nl9Ygfr8FdBIpL-doxmHECRx3T5NIXYYtxNkbnMuY29udGFpbmVycGkuY29tCi9kbnMtcXVlcnk" \
+    DNS_FAILSAFE="tls://162.159.36.1:853;tcp://119.29.107.85:9090;tcp://118.24.208.197:9090"
 
 EXPOSE 8080/tcp 1080/tcp
 

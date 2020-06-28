@@ -10,12 +10,12 @@ DNS_BOOTSTRAP="$(echo $DNS_FAILSAFE | sed 's/[ \t]//g; s/;/\n/g' | sed '/^$/d; s
 DNS_FAILSAFE="$(echo $DNS_FAILSAFE | sed 's/[ \t]//g; s/;/\n/g' | sed '/^$/d; s/^/ -f /g' | tr -d '\n')"
 DNS_SAFE="$(echo $DNS_SAFE | sed 's/[ \t]//g; s/;/\n/g' | sed '/^$/d; s/^/ -u /g' | tr -d '\n')"
 
-( /usr/bin/dnsproxy -z -s -p 53 $DNS_BOOTSTRAP $DNS_FAILSAFE $DNS_SAFE 2>&1 > $logs/dns.log ) &
+( /usr/bin/dnsproxy --cache --edns --all-servers $DNS_BOOTSTRAP $DNS_FAILSAFE $DNS_SAFE 2>&1 > $logs/dns.log ) &
 while ! nslookup www.google.com 2>&1 | grep -q 1e100; do :;done
 
 cat <<-EOF >> $conf
 [program:DNS]
-command=/usr/bin/dnsproxy -a -z -s --edns -p 53 $DNS_BOOTSTRAP $DNS_FAILSAFE $DNS_SAFE
+command=/usr/bin/dnsproxy --cache --edns --all-servers $DNS_BOOTSTRAP $DNS_FAILSAFE $DNS_SAFE
 autorestart=true
 redirect_stderr=true
 stdout_logfile=$logs/dns.log
