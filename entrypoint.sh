@@ -74,4 +74,5 @@ EOF
 # defualt port 80 443
 export CADDYPATH=/etc/ssl/caddy
 cat /etc/caddy/Caddyfile
-/usr/bin/caddy -log stdout -conf=/etc/caddy/Caddyfile -root=/var/tmp
+/usr/bin/caddy -agree=true -log stdout -conf=/etc/caddy/Caddyfile -root=/var/tmp
+
