@@ -10,12 +10,12 @@ DNS_BOOTSTRAP="$(echo $DNS_FAILSAFE | sed 's/[ \t]//g; s/;/\n/g' | sed '/^$/d; s
 DNS_FAILSAFE="$(echo $DNS_FAILSAFE | sed 's/[ \t]//g; s/;/\n/g' | sed '/^$/d; s/^/ -f /g' | tr -d '\n')"
 DNS_SAFE="$(echo $DNS_SAFE | sed 's/[ \t]//g; s/;/\n/g' | sed '/^$/d; s/^/ -u /g' | tr -d '\n')"
 
-( /usr/bin/dnsproxy --cache --edns --all-servers $DNS_BOOTSTRAP $DNS_FAILSAFE $DNS_SAFE 2>&1 > $logs/dns.log ) &
+( /usr/bin/dnsproxy --cache --edns --all-servers --ipv6-disabled $DNS_BOOTSTRAP $DNS_FAILSAFE $DNS_SAFE 2>&1 > $logs/dns.log ) &
 while ! nslookup www.google.com 2>&1 | grep -q 1e100; do :;done
 
 cat <<-EOF >> $conf
 [program:DNS]
-command=/usr/bin/dnsproxy --cache --edns --all-servers $DNS_BOOTSTRAP $DNS_FAILSAFE $DNS_SAFE
+command=/usr/bin/dnsproxy --cache --edns --all-servers --ipv6-disabled $DNS_BOOTSTRAP $DNS_FAILSAFE $DNS_SAFE
 autorestart=true
 redirect_stderr=true
 stdout_logfile=$logs/dns.log
@@ -35,54 +35,41 @@ port: 8080
 socks-port: 1080
 allow-lan: true
 log-level: debug
-mode: Rule
+mode: rule
 
 dns:
   enable: true
   nameserver:
   - 127.0.0.1:53
 
-Proxy:
+proxies:
 EOF
 
 port=18000
 shadowsocks-helper subscribe2ssr -s $URL | tr -d ' ' > subscribe.list
 grep $SRV_GREP subscribe.list | while read ssr; do
-name=$(echo $ssr | sed 's/:.*//g')
 ssr=$(echo $ssr | sed 's/^[^:]*://g')
-
-cat <<-EOF >> $conf
-[program:$name]
-command=/usr/bin/glider -listen socks5://:$port -forward $ssr
-autorestart=true
-redirect_stderr=true
-stdout_logfile=$logs/glider-$name.log
-stdout_logfile_maxbytes=102400
-
-EOF
-
-cat <<-EOF >> $yaml
-- { name: "$name", type: socks5, server: 127.0.0.1, port: $port }
-EOF
-
-echo -en "  \"$name\",\n" >> ${yaml}_group
-
+shadowsocks-helper ssr2clash -s $ssr | sed 's+^+  +g' >> $yaml
 port=$((port + 1))
 done
 
+sed -n 's/.*name: /      - /p' $yaml | grep -v 'Proxy' >> ${yaml}_group
+
 cat <<-EOF | sed 's/,],/\n],/g' >> $yaml
 
-Proxy Group:
-- { name: "Proxy", type: ${CLASH_POLICY},
-proxies: [
-$(cat ${yaml}_group)],
-url: "${TEST_URL}", interval: ${CLASH_INTERVAL} }
+proxy-groups:
+  - name: Proxy
+    type: url-test
+    proxies:
+$(cat ${yaml}_group)
+    url: "${TEST_URL}"
+    interval: ${CLASH_INTERVAL}
 
-Rule:
-$(sed "1,$(sed -n -e '/^Rule/=' Hackl0us_clash.yaml)d" Hackl0us_clash.yaml)
+rules:
+$(sed "1,$(sed -n -e '/^rules:/=' Hackl0us_clash.yaml)d" Hackl0us_clash.yaml)
 EOF
 
-rm -f ${yaml}_group Hackl0us_clash.yaml
 kill -9 $(pgrep -f dnsproxy)
-echo -e "\n# Init: Done; Subscribe Server Count: $(grep -c bin/glider $conf); FINAL Supervisord"
+echo -e "\n# Init: Done; Subscribe Server Count: $(cat ${yaml}_group | wc -l); FINAL Supervisord"
+rm -f ${yaml}_group Hackl0us_clash.yaml
 /usr/bin/supervisord -c $conf

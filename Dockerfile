@@ -1,9 +1,8 @@
 FROM dreamacro/clash as clash
 FROM ochinchina/supervisord as supervisord
+FROM chenhw2/dnsproxy as dnsproxy
 FROM golang as golang
-RUN CGO_ENABLED=0 GO111MODULE='on' go get -v github.com/nadoo/glider@v0.10.0
-RUN CGO_ENABLED=0 GO111MODULE='on' go get -v github.com/AdguardTeam/dnsproxy@v0.29.0
-RUN CGO_ENABLED=0 GO111MODULE='on' go get -v github.com/chenhw2/shadowsocks-helper@v0.9.8
+RUN CGO_ENABLED=0 GO111MODULE='on' go get -v github.com/chenhw2/shadowsocks-helper@v0.10.0
 
 FROM chenhw2/alpine:base
 LABEL MAINTAINER="https://github.com/chenhw2"
@@ -12,6 +11,7 @@ WORKDIR /subscribe
 
 # /usr/bin/{dnsproxy, clash, glider, supervisord, shadowsocks-helper}
 COPY --from=clash /clash /usr/bin/
+COPY --from=dnsproxy /usr/bin/dnsproxy /usr/bin/
 COPY --from=supervisord /usr/local/bin/supervisord /usr/bin/
 COPY --from=golang /go/bin/* /usr/bin/
 
