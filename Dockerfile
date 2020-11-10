@@ -1,7 +1,7 @@
 FROM chenhw2/alpine:base
 LABEL MAINTAINER HONWEN <https://github.com/honwen>
 
-ARG VER=v0.33.0
+ARG VER=v0.33.1
 ARG URL=https://github.com/AdguardTeam/dnsproxy/releases/download/${VER}/dnsproxy-linux-amd64-${VER}.tar.gz
 
 # /usr/bin/dnsproxy
