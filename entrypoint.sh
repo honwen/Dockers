@@ -21,7 +21,7 @@ cat <<EOF | sed '/DELETE/d' | jq '.' | tee $XRAY_CONFIG
 $(echo $USERS | sed 's_;_\n_g' | while read user; do
 uuid=$(echo -n $user | sed 's_:.*__g')
 email=$(echo -n $user | sed 's_.*:__g')
-echo '{}' | jq ".|{uuid:\"$uuid\",email:\"$email\",flow:\"xtls-rprx-direct\"}"
+echo '{}' | jq ".|{id:\"$uuid\",email:\"$email\",flow:\"xtls-rprx-direct\"}"
 echo ','
 done
 )====TO-DELETE====
