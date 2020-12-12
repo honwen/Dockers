@@ -8,8 +8,25 @@ WS_PATH=${WS_PATH:-/websocket}
 ACME_PREFIX=${ACME_PREFIX:-/etc/ssl/caddy/acme/acme-v02.api.letsencrypt.org/sites}
 ACME_DOMAIN=${ACME_DOMAIN:-example.org}
 
+convertClients() {
+  echo $1 | sed 's_;_\n_g' | while read user; do
+  uuid=$(echo -n $user | sed 's_:.*__g')
+  email=$(echo -n $user | sed 's_.*:__g')
+  echo '{}' | jq ".|{id:\"$uuid\",email:\"$email\",flow:\"xtls-rprx-direct\"}"
+  echo ','
+  done
+}
+
+genJsonClients() {
+cat <<EOF | sed '/==TOD==/d' | jq '.'
+[
+  $(convertClients $1)==TOD==
+]
+EOF
+}
+
 # Xray config Init
-cat <<EOF | sed '/DELETE/d' | jq '.' | tee $XRAY_CONFIG
+cat <<EOF | jq '.' | tee $XRAY_CONFIG
 {
   "log": {
     "loglevel": "warning"
@@ -19,15 +36,7 @@ cat <<EOF | sed '/DELETE/d' | jq '.' | tee $XRAY_CONFIG
       "port": ${XRAY_SSLPORT},
       "protocol": "vless",
       "settings": {
-        "clients": [
-$(echo $USERS | sed 's_;_\n_g' | while read user; do
-uuid=$(echo -n $user | sed 's_:.*__g')
-email=$(echo -n $user | sed 's_.*:__g')
-echo '{}' | jq ".|{id:\"$uuid\",email:\"$email\",flow:\"xtls-rprx-direct\"}"
-echo ','
-done
-)====TO-DELETE====
-        ],
+        "clients": $(genJsonClients $USERS),
         "decryption": "none",
         "fallbacks": [
           {
@@ -59,15 +68,7 @@ done
       "port": ${WS_PORT},
       "protocol": "vless",
       "settings": {
-        "clients": [
-$(echo $USERS | sed 's_;_\n_g' | while read user; do
-uuid=$(echo -n $user | sed 's_:.*__g')
-email=$(echo -n $user | sed 's_.*:__g')
-echo '{}' | jq ".|{id:\"$uuid\",email:\"$email\",flow:\"xtls-rprx-direct\"}"
-echo ','
-done
-)====TO-DELETE====
-        ],
+        "clients": $(genJsonClients $USERS),
         "decryption": "none"
       },
       "streamSettings": {
@@ -82,15 +83,7 @@ done
       "port": $((WS_PORT+1)),
       "protocol": "vless",
       "settings": {
-        "clients": [
-$(echo $USERS | sed 's_;_\n_g' | while read user; do
-uuid=$(echo -n $user | sed 's_:.*__g')
-email=$(echo -n $user | sed 's_.*:__g')
-echo '{}' | jq ".|{id:\"$uuid\",email:\"$email\",flow:\"xtls-rprx-direct\"}"
-echo ','
-done
-)====TO-DELETE====
-        ],
+        "clients": $(genJsonClients $USERS),
         "decryption": "none"
       },
       "streamSettings": {
