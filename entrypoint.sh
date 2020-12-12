@@ -31,7 +31,13 @@ done
         "decryption": "none",
         "fallbacks": [
           {
-            "dest": ${XRAY_FALLBACK}
+            "dest": ${XRAY_FALLBACK},
+            "xver": 1
+          },
+          {
+            "path": "${WS_PATH}",
+            "dest": $((WS_PORT+1)),
+            "xver": 1
           }
         ]
       },
@@ -68,6 +74,30 @@ done
         "network": "ws",
         "security": "none",
         "wsSettings": {
+          "path": "${WS_PATH}"
+        }
+      }
+    },
+    {
+      "port": $((WS_PORT+1)),
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+$(echo $USERS | sed 's_;_\n_g' | while read user; do
+uuid=$(echo -n $user | sed 's_:.*__g')
+email=$(echo -n $user | sed 's_.*:__g')
+echo '{}' | jq ".|{id:\"$uuid\",email:\"$email\",flow:\"xtls-rprx-direct\"}"
+echo ','
+done
+)====TO-DELETE====
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "ws",
+        "security": "none",
+        "wsSettings": {
+          "acceptProxyProtocol": true,
           "path": "${WS_PATH}"
         }
       }
