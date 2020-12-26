@@ -1,6 +1,6 @@
 #!/bin/sh
 
-XRAY_CONFIG=/etc/xray.d/server.json
+XRAY_CONFIG=/usr/share/xray/server.json
 XRAY_SSL_PORT=${XRAY_SSL_PORT:-443}
 XRAY_FALLBACK_PORT=${XRAY_FALLBACK_PORT:-80}
 XRAY_FALLBACK_ADDR=${XRAY_FALLBACK_ADDR:-127.0.0.1}
