@@ -5,7 +5,7 @@ RUN apk add --update --no-cache jq && rm -rf /var/cache /tmp
 # /usr/bin/xray /usr/share/xray/geo*.dat
 RUN mkdir -p /usr/share/xray /tmp /var/cache/apk \
     && cd /tmp \
-    && curl -skSLO $(curl -skSL 'https://api.github.com/repos/XTLS/Xray-core/releases/latest' | sed -n '/url.*linux-64/{s/.*\(https:.*zip\).*/\1/p}') \
+    && curl -skSLO $(curl -skSL 'https://api.github.com/repos/XTLS/Xray-core/releases/latest' | jq -r '.assets[]|.browser_download_url' | grep 'linux-64.zip') \
     && unzip Xray-linux-64.zip \
     && chmod a+x xray \
     && mv xray /usr/bin/ \
