@@ -1,8 +1,8 @@
 #
-# Debian 9 CURL, WGET, HTTPS, HKT_TIMEZONE
+# Debian 10 CURL, WGET, HTTPS, HKT_TIMEZONE
 #
 
-FROM debian:9-slim
+FROM debian:10-slim
 
 ARG TZ=Asia/Hong_Kong
 
