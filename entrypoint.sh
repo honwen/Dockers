@@ -28,12 +28,12 @@ vpncmd localhost /SERVER /CSV /CMD OpenVpnEnable yes /PORTS:1194
 vpncmd localhost /SERVER /CSV /HUB:DEFAULT /CMD DhcpSet /START:192.168.30.100 /END:192.168.30.200 /MASK:255.255.255.0 /EXPIRE:7200 /GW:192.168.30.1 /DNS:${DNS1} /DNS2:${DNS} /DOMAIN /LOG:yes
 
 # enable L2TP/IPsec
-echo $VPN | grep -q L2TP && echo '# Enable L2TP/IPsec' && \
-vpncmd localhost /SERVER /CSV /CMD IPsecEnable /L2TP:yes /L2TPRAW:yes /ETHERIP:no /PSK:${PSK} /DEFAULTHUB:DEFAULT
+echo $VPN | grep -q L2TP && echo '# Enable L2TP/IPsec' &&
+  vpncmd localhost /SERVER /CSV /CMD IPsecEnable /L2TP:yes /L2TPRAW:yes /ETHERIP:no /PSK:${PSK} /DEFAULTHUB:DEFAULT
 
 # enable SstpVPN
-echo $VPN | grep -q SSTP && echo '# Enable SSTP-VPN' && \
-vpncmd localhost /SERVER /CSV /CMD SstpEnable yes
+echo $VPN | grep -q SSTP && echo '# Enable SSTP-VPN' &&
+  vpncmd localhost /SERVER /CSV /CMD SstpEnable yes
 
 # enable SecureNAT
 vpncmd localhost /SERVER /CSV /HUB:DEFAULT /CMD SecureNatEnable
@@ -49,12 +49,12 @@ vpncmd localhost /SERVER /CSV /HUB:DEFAULT /CMD LogDisable security
 echo -n '# Creating user:'
 while IFS=';' read -ra USER; do
   for i in "${USER[@]}"; do
-    IFS=':' read username password <<< "$i"
+    IFS=':' read username password <<<"$i"
     echo -n " $username"
     vpncmd localhost /SERVER /HUB:DEFAULT /CSV /CMD UserCreate $username /GROUP:none /REALNAME:none /NOTE:none
     vpncmd localhost /SERVER /HUB:DEFAULT /CSV /CMD UserPasswordSet $username /PASSWORD:$password
   done
-done <<< "$USERS"
+done <<<"$USERS"
 
 # set password for hub and server
 if [ "V$DEBUG" == "V1" ]; then

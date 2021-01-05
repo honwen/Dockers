@@ -1,11 +1,11 @@
-FROM siomiz/softethervpn:4.28-debian as build
+FROM siomiz/softethervpn:4.29-debian as build
 RUN set -ex && cd / \
     && tar zcvf /binarys.tgz /usr/vpn* /usr/bin/vpn*
 
 FROM chenhw2/debian:base
 LABEL MAINTAINER="https://github.com/chenhw2/Dockers"
 
-ARG NET_TOOLS="iptables iproute iputils-ping"
+ARG NET_TOOLS="iptables iproute2 iputils-ping"
 ARG LIB_NEEDS="libssl1.1 libncurses5 libreadline7 zlib1g"
 
 COPY --from=build /binarys.tgz /
@@ -13,7 +13,8 @@ COPY --from=build /binarys.tgz /
 RUN set -ex && cd / \
     && tar zxvf /binarys.tgz \
     && apt update && apt install -y --no-install-recommends $NET_TOOLS $LIB_NEEDS \
-    && apt update && apt -y autoremove && rm -rf /var/cache/apt/* /binarys.tgz
+    && apt update && apt -y autoremove \
+    && rm -rf /tmp/* /var/cache/apt/* /var/log/* /binarys.tgz
 
 COPY entrypoint.sh /
 
