@@ -20,6 +20,7 @@ ENV ACME_AGREE=true \
     USER=git \
     GITEA_CUSTOM=/data/gitea \
     WS_PREFIX=/websocket \
+    FAKE_MODE=on \
     EXTRA_PROXYS="/example http://git.example.com/git,/git https://www.example.com/example"
 
 VOLUME ["/data"]
@@ -28,4 +29,4 @@ EXPOSE 80/tcp 443/tcp
 
 ADD entrypoint.sh 404.html /
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/entrypoint.sh"]

@@ -49,13 +49,74 @@ EOF
 }
 
 # Gitea Init
-[ -f /data/gitea/app.ini ] || cat << EOF > /data/gitea/app.ini
+[ -f /data/gitea/app.ini ] || {
+cat << EOF | tee /data/gitea/app.ini
 [server]
 HTTP_PORT    = 8080
 DOMAIN       = ${DOMAIN}
+SSH_DOMAIN   = ${DOMAIN}
 ROOT_URL     = https://${DOMAIN}/
 DISABLE_SSH  = true
 EOF
+
+[ "V$FAKE_MODE" == "Von" ] && cat << EOF | tee -a /data/gitea/app.ini
+LFS_START_SERVER = true
+LFS_CONTENT_PATH = /data/lfs
+LFS_JWT_SECRET   = $(dd if=/dev/urandom bs=32 count=1 status=none | base64)
+OFFLINE_MODE     = false
+
+[security]
+INTERNAL_TOKEN = $(dd if=/dev/urandom bs=24 count=1 status=none | base64).$(dd if=/dev/urandom bs=48 count=1 status=none | base64)
+INSTALL_LOCK   = true
+SECRET_KEY     = $(dd if=/dev/urandom bs=48 count=1 status=none | base64)
+
+[database]
+DB_TYPE  = sqlite3
+HOST     = 127.0.0.1:3306
+NAME     = gitea
+USER     = gitea
+PASSWD   = 
+SSL_MODE = disable
+PATH     = /data/gitea.db
+
+[repository]
+ROOT = /data/gitea/gitea-repositories
+
+[mailer]
+ENABLED = false
+
+[service]
+REGISTER_EMAIL_CONFIRM            = false
+ENABLE_NOTIFY_MAIL                = false
+DISABLE_REGISTRATION              = true
+ALLOW_ONLY_EXTERNAL_REGISTRATION  = false
+ENABLE_CAPTCHA                    = false
+REQUIRE_SIGNIN_VIEW               = false
+DEFAULT_KEEP_EMAIL_PRIVATE        = true
+DEFAULT_ALLOW_CREATE_ORGANIZATION = true
+DEFAULT_ENABLE_TIMETRACKING       = true
+NO_REPLY_ADDRESS                  = noreply.example.org
+
+[picture]
+DISABLE_GRAVATAR        = false
+ENABLE_FEDERATED_AVATAR = true
+
+[openid]
+ENABLE_OPENID_SIGNIN = false
+ENABLE_OPENID_SIGNUP = false
+
+[session]
+PROVIDER = file
+
+[log]
+MODE      = file
+LEVEL     = Info
+ROOT_PATH = /data/log
+
+[oauth2]
+JWT_SECRET = $(dd if=/dev/urandom bs=32 count=1 status=none | base64)
+EOF
+}
 /usr/bin/gitea web -c /data/gitea/app.ini &
 
 # Caddy Init
