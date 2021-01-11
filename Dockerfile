@@ -15,6 +15,7 @@ COPY --from=gitea /app/gitea/gitea /usr/bin/
 COPY --from=caddy /usr/bin/caddy   /usr/bin/
 
 ENV ACME_AGREE=true \
+    APP_NAME=UrGitTea \
     DOMAIN=example.com \
     EXTRA_DOMAINS="www.example.com,git.example.com" \
     USER=git \

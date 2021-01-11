@@ -50,7 +50,11 @@ EOF
 
 # Gitea Init
 [ -f /data/gitea/app.ini ] || {
-cat << EOF | tee /data/gitea/app.ini
+cat << EOF | grep -v 'UrGitTea' | tee /data/gitea/app.ini
+APP_NAME = ${APP_NAME}
+RUN_USER = root
+RUN_MODE = prod
+
 [server]
 HTTP_PORT    = 8080
 DOMAIN       = ${DOMAIN}
