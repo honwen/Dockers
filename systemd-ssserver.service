@@ -1,0 +1,18 @@
+# example: /etc/systemd/system/ssserver.service
+[Unit]
+Description=SSSERVER
+After=containerd.service
+
+[Service]
+Restart=always
+RestartSec=23s
+StartLimitInterval=65535
+TimeoutStopSec=10
+
+ExecStartPre=-/usr/bin/docker rm -f ssserver
+ExecStart=/usr/bin/docker run --rm --name ssserver --network=host -v /etc/ss.json:/var/config.json:ro chenhw2/ss-obfs
+ExecStop=-/usr/bin/docker rm -f ssserver
+
+[Install]
+WantedBy=multi-user.target
+

@@ -2,28 +2,29 @@
 - https://github.com/honwen/Dockers/tree/ss-obfs
   
 ### Thanks
-- https://github.com/shadowsocks/shadowsocks-libev
+- https://github.com/shadowsocks/shadowsocks-rust
 - https://github.com/shadowsocks/simple-obfs
 - https://github.com/shadowsocks/v2ray-plugin
   
 ### Usage
-```
-$ docker pull chenhw2/ss-obfs
+```bash
+$ docker run --rm chenhw2/ss-obfs ssserver -h
 
-$ docker run -d \
-    -e 'PASSWORD=12345678' \
-    -e 'ARGS=--plugin obfs-server --plugin-opts obfs=tls;failover=products.office.com:443' \
-    -p 8388:8388/tcp -p 8388:8388/udp \
-    chenhw2/ss-obfs
-```
-  
-### Example
-- https://github.com/honwen/Dockers/tree/ss-obfs/example
-  
-### ENV
-```
-ENV SERVER_PORT=8388
-ENV METHOD=chacha20-ietf-poly1305
-ENV PASSWORD=
-ENV Args=
+A fast tunnel proxy that helps you bypass firewalls.
+
+USAGE:
+    ssserver [FLAGS] [OPTIONS] --config <CONFIG>
+
+FLAGS:
+    -d, --daemonize           Daemonize
+    -6                        Resolve hostname to IPv6 address first
+        --log-without-time    Log without datetime prefix
+        --no-delay            Set no-delay option for socket
+    -U                        Server mode TCP_AND_UDP
+    -u                        Server mode UDP_ONLY
+    -v                        Set the level of debug
+    -h, --help                Prints help information
+    -V, --version             Prints version information
+
+...
 ```
