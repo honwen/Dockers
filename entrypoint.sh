@@ -20,4 +20,4 @@ openvpn --dev tun --proto tcp-server --ifconfig ${prefix}1 ${prefix}2 --keepaliv
 
 gost -L=${GOST_ARGS}:8488 2>&1 >/var/01_ovpn-gost.log &
 
-v2ray-plugin -server -remotePort=8488 -localAddr 0.0.0.0 -path=${WS_PATH} >/var/01_ovpn-plugin.log
+xray-plugin -server -remotePort=8488 -localAddr 0.0.0.0 -path=${WS_PATH} >/var/01_ovpn-plugin.log

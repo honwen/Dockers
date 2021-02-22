@@ -1,12 +1,6 @@
-FROM chenhw2/v2ray-plugin:latest as plugin
+FROM chenhw2/xray-plugin:latest as plugin
 FROM chenhw2/udp-speeder:latest as us
-# FROM chenhw2/gost:latest as gost
-FROM golang:buster as gost
-RUN set -ex \
-    && git clone https://github.com/ginuerzh/gost.git \
-    && cd gost/cmd/gost \
-    && CGO_ENABLED=0 go build \
-    && mv gost /usr/bin/
+FROM chenhw2/gost:latest as gost
 
 FROM chenhw2/debian:base
 LABEL MAINTAINER="https://github.com/chenhw2/Dockers"
@@ -18,7 +12,7 @@ RUN set -ex && cd / \
 
 COPY --from=gost /usr/bin/gost /usr/bin/
 COPY --from=us /usr/bin/udp-speeder /usr/bin/
-COPY --from=plugin /usr/bin/v2ray-plugin /usr/bin/
+COPY --from=plugin /usr/bin/xray-plugin /usr/bin/
 
 ENV WS_PATH='/websocket' \
     GOST_ARGS='' \
