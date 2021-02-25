@@ -1,6 +1,5 @@
 FROM chenhw2/alpine:base
 LABEL MAINTAINER="https://github.com/honwen"
-RUN apk add --update --no-cache jq && rm -rf /var/cache /tmp
 
 # /usr/bin/xray /usr/share/xray/geo*.dat
 RUN mkdir -p /usr/share/xray /tmp /var/cache/apk \
