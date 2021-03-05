@@ -1,9 +1,9 @@
-FROM chenhw2/xray-plugin:latest as plugin
-FROM chenhw2/udp-speeder:latest as us
-FROM chenhw2/gost:latest as gost
+FROM teddysun/shadowsocks-rust as plugin
+FROM chenhw2/udp-speeder as us
+FROM chenhw2/gost as gost
 
 FROM chenhw2/debian:base
-LABEL MAINTAINER="https://github.com/chenhw2/Dockers"
+LABEL MAINTAINER="https://github.com/honwen/Dockers"
 
 RUN set -ex && cd / \
     && apt update \
