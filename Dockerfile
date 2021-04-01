@@ -1,5 +1,5 @@
-FROM teddysun/shadowsocks-rust as plugin
 FROM chenhw2/udp-speeder as us
+FROM chenhw2/ss-obfs as plugin
 FROM chenhw2/gost as gost
 
 FROM chenhw2/debian:base
