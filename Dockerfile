@@ -8,6 +8,6 @@ RUN cd /tmp \
     && dnsproxy --version \
     && rm -rf /tmp/*
 
-ENV ARGS="--cache --fastest-addr --edns --all-servers -u tls://1.0.0.1:853 -u tls://8.8.4.4:853 -u tls://162.159.36.1:853 -u tls://185.222.222.222:853"
+ENV ARGS="--cache --fastest-addr --edns --all-servers --tls-min-version=1.2 -u=tls://8.8.4.4 -u=tls://162.159.36.1 -u=https://149.112.112.11:5053/dns-query"
 
 CMD /usr/bin/dnsproxy ${ARGS}
