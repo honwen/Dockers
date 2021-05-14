@@ -24,4 +24,4 @@ RUN set -ex \
 
 ENV ARGS='-c /var/config.json'
 
-CMD ssserver ${ARGS}
+CMD ssserver ${ARGS} ${NODELAY:+--tcp-no-delay} ${FASTOPEN:+--tcp-fast-open}
