@@ -38,6 +38,13 @@ cat << FOO
 FOO
 done )
 
+$( echo "${BASEAUTHS}" | tr ',' '\n' | grep -v 'example' | while read it; do
+echo $it | grep -q '/' || continue
+cat << FOO
+  basicauth ${it}
+FOO
+done )
+
   proxy / http://localhost:8080 {
     except /404.html
     except ${WS_PREFIX}.*
