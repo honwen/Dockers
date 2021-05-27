@@ -1,7 +1,6 @@
 #!/bin/sh
 
 EXTRA_DOMAINS="$(echo ${EXTRA_DOMAINS} | grep -v 'example.com' | sed 's;[,;]; ;g')"
-EXTRA_PROXYS="$(echo ${EXTRA_PROXYS} | grep -v 'example.com')"
 ACCEPT_NOSSL=${ACCEPT_NOSSL:-0}
 
 echo "#DOMAIN: ${DOMAIN} ${EXTRA_DOMAINS}"
@@ -12,26 +11,25 @@ echo
 mkdir -p /etc/ssl/caddy /etc/caddy /data/gitea /var/tmp
 
 web_config() {
-host_ip=$(route -n | awk '/^0.0.0.0/ { print $2 }')
 echo -n ' '
 cat << EOF
 {
   timeouts 120s
   gzip
 
-  proxy ${WS_PREFIX} http://${host_ip}:8888 {
+  proxy ${WS_PREFIX} http://_LOCALHOST_:8888 {
     websocket
   }
 
 $( for i in `seq 0 9`; do
 cat << FOO
-  proxy ${WS_PREFIX}${i} http://${host_ip}:777${i} {
+  proxy ${WS_PREFIX}${i} http://_LOCALHOST_:777${i} {
     websocket
   }
 FOO
 done )
 
-$( echo "${EXTRA_PROXYS}" | tr ',' '\n' | while read it; do
+$( echo "${EXTRA_PROXYS}" | tr ',' '\n' | grep -v 'example.com' | while read it; do
 echo $it | grep -q '.' || continue
 cat << FOO
   proxy ${it} {
@@ -125,7 +123,8 @@ EOF
 
 # Caddy Init
 cp 404.html /var/tmp/
-cat << EOF > /etc/caddy/Caddyfile
+host_ip=$(route -n | awk '/^0.0.0.0/ { print $2 }')
+cat << EOF | sed "s+_LOCALHOST_+${host_ip}+g" > /etc/caddy/Caddyfile
 :80 {
   redir {
     if {path} not /404.html
