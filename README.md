@@ -1,15 +1,16 @@
 ### Source
-- https://github.com/chenhw2/Dockers/tree/caddy-speedtest
-  
-### Thanks
-- https://github.com/mholt/caddy
-- https://github.com/adolfintel/speedtest
-  
-### Usage
-```
-$ docker pull chenhw2/speedtest
 
+- https://github.com/chenhw2/Dockers/tree/libre-speedtest
+
+### Thanks
+
+- https://github.com/librespeed/speedtest-go
+
+### Usage
+
+```bash
 $ docker run -d \
-    -p 80:2015 \
-    chenhw2/speedtest:latest
+    -e PORT=80 \
+    --network=host \
+    chenhw2/speedtest
 ```

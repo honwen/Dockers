@@ -1,9 +1,16 @@
-FROM abiosoft/caddy:php-no-stats as caddy
+FROM chenhw2/alpine:base
 
-ARG SPT_VER=4.7.1
-WORKDIR /var/www
+ARG VER=1.1.3
+ARG URL=https://github.com/librespeed/speedtest-go/releases/download/v${VER}/speedtest-go_${VER}_linux_amd64.tar.gz
+WORKDIR /librespeed
 
-RUN curl -sSL https://github.com/adolfintel/speedtest/archive/${SPT_VER}.tar.gz | tar xzv --strip-components 1 \
-    && sed '/adolfintel/d' example-gauges.html > index.html \
-    && sed 's;^post_max_size.*M;post_max_size = 20M;g' -i /etc/php7/php.ini \
-    && echo -e 'pm.max_children = 32\npm.start_servers = 8\npm.max_spare_servers = 16' >> /etc/php7/php-fpm.conf
+RUN set +ex \
+    && curl -sSL ${URL} | tar -xzv \
+    && mv assets/example-singleServer-progressBar.html assets/index.html \
+    && rm -f assets/example* \
+    && sed 's+^\(listen_port=\).*+\1_PORT_+g' -i settings.toml \
+    && sed 's+ *Example *++g' -i assets/index.html
+
+ENV PORT=80
+
+CMD [ "sh", "-cx", "sed s+_PORT_+${PORT}+g -i settings.toml && ./speedtest-backend" ]
