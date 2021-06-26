@@ -1,13 +1,16 @@
 #
-# Alpine 3.13 CURL, WGET, JQ, HTTPS, HKT_TIMEZONE
+# Alpine 3.14 CURL, WGET, JQ, HTTPS, HKT_TIMEZONE
 #
 
-FROM alpine:3.13
+FROM alpine:3.14
+
+ARG TZ=Asia/Hong_Kong
 
 RUN set -ex \
     && apk add --update --no-cache curl wget ca-certificates jq tzdata \
     && update-ca-certificates \
-    && cp -f /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime \
+    && echo $TZ > /etc/timezone \
+    && ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
     && date \
     && apk del tzdata \
     && rm -rf /var/cache/apk/*
