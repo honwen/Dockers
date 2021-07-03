@@ -1,4 +1,6 @@
+FROM alioygur/wait-for as wait
 FROM chenhw2/gost as gost
+FROM chenhw2/frp as frp
 
 FROM chenhw2/debian:base
 LABEL MAINTAINER="https://github.com/chenhw2/Dockers"
@@ -9,10 +11,13 @@ ARG DEPS="kmod xl2tpd strongswan"
 RUN set -ex && cd / \
   && apt update && apt install -y --no-install-recommends $TOOLS $DEPS
 
+COPY --from=frp /usr/bin/frpc /usr/bin/
 COPY --from=gost /usr/bin/gost /usr/bin/
+COPY --from=wait /app/wait-for /usr/bin/
 COPY entrypoint.sh /
 
-ENV GOST_ARGS='-L=:8080'
+ENV TOOL='gost'
+ENV TOOL_ARGS='-L=:8080'
 
 EXPOSE 8080
 

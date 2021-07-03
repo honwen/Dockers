@@ -36,3 +36,9 @@ Test:
 ```bash
 curl -x 127.0.0.1:8080 -v myip.ipip.net
 ```
+
+Advanced (without privileged):
+
+```bash
+docker run --rm --name ipsec-client --env-file=ipsec.env --cap-add=NET_ADMIN --device=/dev/ppp --sysctl=net.ipv4.ip_forward=1 --sysctl=net.ipv4.conf.all.accept_redirects=0 --sysctl=net.ipv4.conf.all.send_redirects=0 --sysctl=net.ipv4.conf.all.rp_filter=0 --sysctl=net.ipv4.conf.default.accept_redirects=0 --sysctl=net.ipv4.conf.default.send_redirects=0 --sysctl=net.ipv4.conf.default.rp_filter=0 --sysctl=net.ipv4.conf.eth0.send_redirects=0 --sysctl=net.ipv4.conf.eth0.rp_filter=0 -v=/lib/modules:/lib/modules:ro -p=8080:8080 chenhw2/ipsec-client
+```

@@ -200,5 +200,5 @@ route add default dev ppp0
 
 sort -u /etc/ppp/resolv.conf >/etc/resolv.conf
 
-gost ${GOST_ARGS}
+${TOOL} ${TOOL_ARGS}
 # exec /bin/bash
