@@ -200,10 +200,20 @@ route add default dev ppp0
 
 sort -u /etc/ppp/resolv.conf >/etc/resolv.conf
 
+conf=/entrypoint.conf
+cat <<-EOF | tee -a $conf
+[program:${TOOL}]
+command=${TOOL} ${TOOL_ARGS}
+autorestart=true
+redirect_stderr=true
+stdout_logfile=/var/log/${TOOL}.log
+stdout_logfile_maxbytes=1024000
+EOF
+
 if [ -z "$PROBE_TCP" ]; then
-  ${TOOL} ${TOOL_ARGS}
+  /usr/bin/supervisord -c $conf
 else
-  (${TOOL} ${TOOL_ARGS}) &
+  /usr/bin/supervisord -c $conf -d
   while wait-for -it $PROBE_TCP; do sleep ${PROBE_INTERVAL:-30}; done
   exiterr 'HEALTHCHECK[TCP-PROBE]: FAILED'
 fi
