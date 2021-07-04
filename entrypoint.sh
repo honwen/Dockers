@@ -200,5 +200,12 @@ route add default dev ppp0
 
 sort -u /etc/ppp/resolv.conf >/etc/resolv.conf
 
-${TOOL} ${TOOL_ARGS}
+if [ -z "$PROBE_TCP" ]; then
+  ${TOOL} ${TOOL_ARGS}
+else
+  (${TOOL} ${TOOL_ARGS}) &
+  while wait-for -it $PROBE_TCP; do sleep ${PROBE_INTERVAL:-30}; done
+  exiterr 'HEALTHCHECK[TCP-PROBE]: FAILED'
+fi
+
 # exec /bin/bash
