@@ -11,16 +11,19 @@ COPY --from=obfs /usr/bin/obfs* /usr/bin/
 
 RUN set -ex \
     && cd /usr/bin/ \
-    && curl -skSL $(curl -skSL 'https://api.github.com/repos/shadowsocks/shadowsocks-rust/releases/latest' | sed -n '/url.*x86_64-unknown-linux-musl/{s/.*\(https:.*tar.xz\)[^\.].*/\1/p}') | tar xJ \
+    && curl -skSL $(curl -skSL 'https://api.github.com/repos/shadowsocks/shadowsocks-rust/releases/latest' | sed -n '/url.*x86_64-unknown-linux-musl/{s/.*\(https:.*tar.xz\)[^\.].*/\1/p}') | tar xJv \
     && ssserver -V \
     \
-    && curl -skSL $(curl -skSL 'https://api.github.com/repos/teddysun/v2ray-plugin/releases/latest' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\).*/\1/p}') | tar xz \
+    && curl -skSL $(curl -skSL 'https://api.github.com/repos/teddysun/v2ray-plugin/releases/latest' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\).*/\1/p}') | tar xzv \
     && mv v2ray-plugin* v2ray-plugin \
     && v2ray-plugin -version \
     \
-    && curl -skSL $(curl -skSL 'https://api.github.com/repos/teddysun/xray-plugin/releases/latest' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\).*/\1/p}') | tar xz \
+    && curl -skSL $(curl -skSL 'https://api.github.com/repos/teddysun/xray-plugin/releases/latest' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\).*/\1/p}') | tar xzv \
     && mv xray-plugin* xray-plugin \
-    && xray-plugin -version
+    && xray-plugin -version \
+    \
+    && curl -skSL $(curl -skSL 'https://api.github.com/repos/maskedeken/gost-plugin/releases/latest' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\).*/\1/p}') | tar xzv --strip-components=1 linux-amd64/gost-plugin \
+    && gost-plugin -version
 
 ENV ARGS='-c /var/config.json'
 
