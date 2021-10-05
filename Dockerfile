@@ -23,7 +23,16 @@ RUN set -ex \
     && xray-plugin -version \
     \
     && curl -skSL $(curl -skSL 'https://api.github.com/repos/maskedeken/gost-plugin/releases/latest' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\).*/\1/p}') | tar xzv --strip-components=1 linux-amd64/gost-plugin \
-    && gost-plugin -version
+    && gost-plugin -version \
+    \
+    && curl -skSL $(curl -skSL 'https://api.github.com/repos/xtaci/kcptun/releases/latest' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\)[^\.].*/\1/p}') | tar xz \
+    && mv client_* kcpc \
+    && kcpc -version \
+    && mv server_* kcps \
+    && kcps -version \
+    && curl -skSLO https://github.com/honwen/openwrt-kcptun-plugin/raw/master/src/kcptun \
+    && chmod a+x kcptun \
+    && ln -sf kcptun kcptun-plugin
 
 ENV ARGS='-c /var/config.json'
 
