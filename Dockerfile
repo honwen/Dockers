@@ -11,7 +11,8 @@ COPY --from=obfs /usr/bin/obfs* /usr/bin/
 
 RUN set -ex \
     && cd /usr/bin/ \
-    && curl -skSL $(curl -skSL 'https://api.github.com/repos/shadowsocks/shadowsocks-rust/releases/latest' | sed -n '/url.*x86_64-unknown-linux-musl/{s/.*\(https:.*tar.xz\)[^\.].*/\1/p}') | tar xJv \
+    && curl -skSL $(curl -skSL 'https://api.github.com/repos/shadowsocks/shadowsocks-rust/releases/latest' | sed -n '/url.*x86_64-unknown-linux-musl/{s/.*\(https:.*tar.xz\)[^\.].*/\1/p}') | tar xJv ssservice \
+    && for it in ssserver ssmanager sslocal; do ln -sf ssservice $it; done \
     && ssserver -V \
     \
     && curl -skSL $(curl -skSL 'https://api.github.com/repos/teddysun/v2ray-plugin/releases/latest' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\).*/\1/p}') | tar xzv \
