@@ -7,6 +7,8 @@ FROM chenhw2/libev-build:musl as obfs
 FROM chenhw2/alpine:base
 LABEL MAINTAINER HONWEN <https://github.com/honwen>
 
+ENV ARGS='-c /var/config.json'
+
 COPY --from=obfs /usr/bin/obfs* /usr/bin/
 
 RUN set -ex \
@@ -34,7 +36,5 @@ RUN set -ex \
     && curl -skSLO https://github.com/honwen/openwrt-kcptun-plugin/raw/master/src/kcptun \
     && chmod a+x kcptun \
     && ln -sf kcptun kcptun-plugin
-
-ENV ARGS='-c /var/config.json'
 
 CMD ssserver ${ARGS} ${NODELAY:+--tcp-no-delay} ${FASTOPEN:+--tcp-fast-open}
