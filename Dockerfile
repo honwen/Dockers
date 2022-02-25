@@ -6,7 +6,7 @@ FROM chenhw2/debian:base
 LABEL MAINTAINER="https://github.com/honwen/Dockers"
 
 RUN set -ex && cd / \
-    && apt update \
+    && apt update -y --allow-releaseinfo-change \
     && apt install -y --no-install-recommends iptables openvpn \
     && rm -rf /tmp/* /var/cache/apt/* /var/log/*
 
