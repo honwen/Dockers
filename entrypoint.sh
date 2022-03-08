@@ -59,6 +59,7 @@ cat << EOF | grep -v 'UrGitTea' | tee /data/gitea/app.ini
 APP_NAME = ${APP_NAME}
 RUN_USER = root
 RUN_MODE = prod
+I_AM_BEING_UNSAFE_RUNNING_AS_ROOT = true
 
 [server]
 HTTP_PORT    = 8080
