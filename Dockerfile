@@ -5,7 +5,7 @@ LABEL MAINTAINER="https://github.com/honwen"
 RUN mkdir -p /usr/share/xray /tmp /var/cache/apk \
     && cd /tmp \
     && curl -skSLO $(curl -skSL 'https://api.github.com/repos/XTLS/Xray-core/releases/latest' \
-    | jq -r '.assets[]|.browser_download_url' | grep 'linux-64.zip') \
+    | jq -r '.assets[]|.browser_download_url' | grep 'linux-64.zip$') \
     && unzip Xray-linux-64.zip \
     && chmod a+x xray \
     && mv xray /usr/bin/ \
