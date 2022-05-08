@@ -1,13 +1,21 @@
 FROM chenhw2/alpine:base
-MAINTAINER CHENHW2 <https://github.com/chenhw2>
+LABEL MAINTAINER="https://github.com/chenhw2"
 
 RUN apk update \
     && apk add --no-cache dnsmasq \
     && rm -rf /var/cache/apk/*
 
-RUN echo 'conf-dir=/etc/dnsmasq.d/,*.conf' > /etc/dnsmasq.conf
-RUN echo "user=root" >> /etc/dnsmasq.conf
-# slove "dnsmasq: setting capabilities failed: Operation not permitted"
-# refs:https://github.com/nicolasff/docker-cassandra/issues/8
+RUN set -ex \
+    && mkdir -p /etc/dnsmasq.d /data \
+    && wget https://github.com/pymumu/smartdns/releases/download/Release36.1/smartdns-x86_64 -O /usr/bin/smartdns \
+    && chmod a+x /usr/bin/smartdns \
+    && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/bogus.conf -O /etc/dnsmasq.d/bogus.conf \
+    && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/gfwlist.gz -O /data/gfwlist.gz
 
-ENTRYPOINT ["dnsmasq","-k","--port=5353"]
+COPY etc/* /etc/
+
+ADD entrypoint.sh /
+
+ENV PORT=53
+
+CMD ["/entrypoint.sh"]

@@ -1,15 +1,18 @@
 ### Source
-- https://github.com/chenhw2/Dockers/tree/DNSMASQ
-  
-### Thanks to
-- https://en.wikipedia.org/wiki/Dnsmasq
+
+- https://github.com/honwen/Dockers/tree/dnsmasq-extra
+
+### Thanks
+
+- https://github.com/honwen/openwrt-dnsmasq-extra
 
 ### Usage
+
 ```
-$ docker pull chenhw2/dnsmasq
+$ docker pull chenhw2/dnsmasq-extra
 
 $ docker run -d \
-    -v data:/etc/dnsmasq.d/ \
-    -p 53:5353/tcp -p 53:5353/udp \
-    chenhw2/dnsmasq
+    --name dnsmasq-extra \
+    -p 53:53/udp \
+    chenhw2/dnsmasq-extra
 ```
