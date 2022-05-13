@@ -15,7 +15,8 @@ RUN mkdir -p /usr/share/xray /tmp /var/cache/apk \
 
 ENV ACME_DOMAIN="xray.example.org" \
     USERS="uuid00;uuid01:email01;uuid02:email02" \
-    WS_PATH="/websocket"
+    WS_PATH="/websocket" \
+    XRAY_BANCNIP=1
 
 ADD entrypoint.sh /
 
