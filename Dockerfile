@@ -10,11 +10,10 @@ RUN set -ex \
     && wget https://github.com/pymumu/smartdns/releases/download/Release36.1/smartdns-x86_64 -O /usr/bin/smartdns \
     && chmod a+x /usr/bin/smartdns \
     && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/bogus.conf -O /etc/dnsmasq.d/bogus.conf \
+    && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/direct.gz -O /data/direct.gz \
     && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/gfwlist.gz -O /data/gfwlist.gz
 
-COPY etc/* /etc/
-
-ADD entrypoint.sh /
+COPY root /
 
 ENV PORT=53
 
