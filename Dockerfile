@@ -9,12 +9,12 @@ RUN apk update \
 
 RUN set -ex \
     && mkdir -p /etc/dnsmasq.d /data \
-    && wget https://github.com/pymumu/smartdns/releases/download/Release36.1/smartdns-x86_64 -O /usr/bin/smartdns \
+    && wget https://github.com/pymumu/smartdns/releases/download/Release37-RC1/smartdns-x86_64 -qO /usr/bin/smartdns \
     && chmod a+x /usr/bin/smartdns \
-    && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/bogus.conf -O /etc/dnsmasq.d/bogus.conf \
-    && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/direct.gz -O /data/direct.gz \
-    && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/gfwlist.gz -O /data/gfwlist.gz \
-    && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/tldn.gz -O /data/tldn.gz
+    && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/bogus.conf -qO /etc/dnsmasq.d/bogus.conf \
+    && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/direct.gz -qO /data/direct.gz \
+    && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/gfwlist.gz -qO /data/gfwlist.gz \
+    && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/tldn.gz -qO /data/tldn.gz
 
 COPY root /
 
