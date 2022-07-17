@@ -3,13 +3,13 @@ LABEL MAINTAINER="https://github.com/chenhw2"
 
 RUN apk update \
     && apk add --no-cache dnsmasq \
-    && curl -skSL https://github.com/mr-karan/doggo/releases/download/v0.5.3/doggo_0.5.3_linux_amd64.tar.gz | tar -C /usr/bin -zx doggo \
+    && curl -skSL https://github.com/mr-karan/doggo/releases/download/v0.5.4/doggo_0.5.4_linux_amd64.tar.gz | tar -C /usr/bin -zx doggo \
     && doggo -h \
     && rm -rf /var/cache/apk/*
 
 RUN set -ex \
     && mkdir -p /etc/dnsmasq.d /data \
-    && wget https://github.com/pymumu/smartdns/releases/download/Release37-RC1/smartdns-x86_64 -qO /usr/bin/smartdns \
+    && wget https://github.com/pymumu/smartdns/releases/download/Release37-RC2/smartdns-x86_64 -qO /usr/bin/smartdns \
     && chmod a+x /usr/bin/smartdns \
     && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/bogus.conf -qO /etc/dnsmasq.d/bogus.conf \
     && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/direct.gz -qO /data/direct.gz \
