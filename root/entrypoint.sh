@@ -1,5 +1,8 @@
 #!/bin/sh
 
+mkdir -p /var/log/smartdns
+chmod 777 /var/log/smartdns
+
 echo >&2 "# SMARTDNS: cn"
 $(which smartdns) -c /etc/smartdns_cn.conf -p /var/run/smartdns_cn.pid
 
