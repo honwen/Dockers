@@ -9,7 +9,7 @@ RUN apk update \
 
 RUN set -ex \
     && mkdir -p /etc/dnsmasq.d /data \
-    && wget https://github.com/pymumu/smartdns/releases/download/Release37-RC2/smartdns-x86_64 -qO /usr/bin/smartdns \
+    && wget https://github.com/pymumu/smartdns/releases/download/Release37/smartdns-x86_64 -qO /usr/bin/smartdns \
     && chmod a+x /usr/bin/smartdns \
     && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/bogus.conf -qO /etc/dnsmasq.d/bogus.conf \
     && wget https://raw.githubusercontent.com/honwen/openwrt-dnsmasq-extra/master/dnsmasq-extra/files/data/direct.gz -qO /data/direct.gz \
