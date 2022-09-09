@@ -5,6 +5,7 @@ XRAY_SSL_PORT=${XRAY_SSL_PORT:-443}
 XRAY_FALLBACK_PORT=${XRAY_FALLBACK_PORT:-80}
 XRAY_FALLBACK_ADDR=${XRAY_FALLBACK_ADDR:-127.0.0.1}
 XRAY_QUIC_SECURITY=${XRAY_QUIC_SECURITY:-none}
+TROJAN_PORT="4${XRAY_SSL_PORT}"
 WS_PORT=8080
 WS_PATH=${WS_PATH:-/websocket}
 ACME_PREFIX=${ACME_PREFIX:-/etc/ssl/caddy/acme/acme-v02.api.letsencrypt.org/sites}
@@ -70,7 +71,8 @@ cat <<EOF | jq '.' | tee $XRAY_CONFIG
         "decryption": "none",
         "fallbacks": [
           {
-            "dest": 1234
+            "dest": ${TROJAN_PORT},
+            "xver": 1
           },
           {
             "path": "${WS_PATH}",
@@ -129,6 +131,25 @@ cat <<EOF | jq '.' | tee $XRAY_CONFIG
             }
           ]
         }
+      }
+    },
+    {
+      "port": ${TROJAN_PORT},
+      "protocol": "trojan",
+      "settings": {
+        "clients": $(genJsonClients $USERS | sed 's+id+password+g'),
+        "fallbacks": [
+          {
+            "dest": 1234
+          }
+        ]
+      },
+      "streamSettings": {
+          "network": "tcp",
+          "security": "none",
+          "tcpSettings": {
+              "acceptProxyProtocol": true
+          }
       }
     },
     {
