@@ -1,6 +1,6 @@
 FROM chenhw2/udp-speeder as us
 FROM chenhw2/ss-obfs as plugin
-FROM chenhw2/gost as gost
+FROM chenhw2/gost3 as gost
 
 FROM chenhw2/debian:base
 LABEL MAINTAINER="https://github.com/honwen/Dockers"
@@ -13,6 +13,11 @@ RUN set -ex && cd / \
 COPY --from=gost /usr/bin/gost /usr/bin/
 COPY --from=us /usr/bin/udp-speeder /usr/bin/
 COPY --from=plugin /usr/bin/xray-plugin /usr/bin/
+COPY --from=plugin /usr/bin/gost-plugin /usr/bin/
+COPY --from=plugin /usr/bin/kcpc /usr/bin/
+COPY --from=plugin /usr/bin/kcps /usr/bin/
+COPY --from=plugin /usr/bin/kcptun /usr/bin/
+COPY --from=plugin /usr/bin/shadow-tls /usr/bin/
 
 ENV WS_PATH='/websocket' \
     GOST_ARGS='' \
