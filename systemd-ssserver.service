@@ -10,7 +10,7 @@ StartLimitInterval=65535
 TimeoutStopSec=10
 
 ExecStartPre=-/usr/bin/docker rm -f ssserver
-ExecStart=/usr/bin/docker run --rm --name ssserver --network=host -v /etc/ss.json:/var/config.json:ro chenhw2/ss-obfs
+ExecStart=/usr/bin/docker run --rm --name ssserver --network=host -v=/etc/ss.json:/var/config.json:ro chenhw2/ss-obfs
 ExecStop=-/usr/bin/docker rm -f ssserver
 
 [Install]

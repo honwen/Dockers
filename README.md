@@ -1,30 +1,28 @@
 ### Source
+
 - https://github.com/honwen/Dockers/tree/ss-obfs
-  
+
 ### Thanks
+
 - https://github.com/shadowsocks/shadowsocks-rust
 - https://github.com/shadowsocks/simple-obfs
-- https://github.com/shadowsocks/v2ray-plugin
-  
+- https://github.com/maskedeken/gost-plugin
+- https://github.com/teddysun/xray-plugin
+- https://github.com/ihciah/shadow-tls
+- https://github.com/xtaci/kcptun
+- https://github.com/honwen/openwrt-kcptun-plugin
+
 ### Usage
+
 ```bash
 $ docker run --rm chenhw2/ss-obfs ssserver -h
 
-A fast tunnel proxy that helps you bypass firewalls.
+A fast tunnel proxy that helps you bypass firewalls. (https://shadowsocks.org)
 
-USAGE:
-    ssserver [FLAGS] [OPTIONS] --config <CONFIG>
+Usage: ssserver [OPTIONS]
 
-FLAGS:
-    -d, --daemonize           Daemonize
-    -6                        Resolve hostname to IPv6 address first
-        --log-without-time    Log without datetime prefix
-        --no-delay            Set no-delay option for socket
-    -U                        Server mode TCP_AND_UDP
-    -u                        Server mode UDP_ONLY
-    -v                        Set the level of debug
-    -h, --help                Prints help information
-    -V, --version             Prints version information
+Options:
+  -c, --config <CONFIG>
 
 ...
 ```
