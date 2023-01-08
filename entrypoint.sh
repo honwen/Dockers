@@ -64,6 +64,32 @@ cat <<EOF | jq '.' | tee $XRAY_CONFIG
       }
     },
     {
+      "port": 44${XRAY_SSL_PORT},
+      "protocol": "vless",
+      "settings": {
+        "clients": $(genJsonClients $USERS | sed 's+xtls-rprx-direct+xtls-rprx-vision+g'),
+        "decryption": "none",
+        "fallbacks": [
+          {
+            "dest": 1234
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "tls",
+        "tlsSettings": {
+          "rejectUnknownSni": true,
+          "certificates": [
+            {
+              "certificateFile": "${ACME_PREFIX}/${ACME_DOMAIN}/${ACME_DOMAIN}.crt",
+              "keyFile": "${ACME_PREFIX}/${ACME_DOMAIN}/${ACME_DOMAIN}.key"
+            }
+          ]
+        }
+      }
+    },
+    {
       "port": ${XRAY_SSL_PORT},
       "protocol": "vless",
       "settings": {
@@ -186,7 +212,12 @@ cat <<EOF | jq '.' | tee $XRAY_CONFIG
   ],$(genBanCHNIP)
   "outbounds": [
     {
-      "protocol": "freedom"
+      "protocol": "freedom",
+      "tag": "direct"
+    },
+    {
+        "protocol": "blackhole",
+        "tag": "block"
     }
   ]
 }
