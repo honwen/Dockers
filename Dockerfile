@@ -4,7 +4,7 @@ LABEL MAINTAINER HONWEN <https://github.com/honwen>
 # /usr/bin/gost
 RUN mkdir -p /usr/bin/ \
     && cd /usr/bin/ \
-    && curl -skSLO https://github.com/go-gost/gost/releases/download/v3.0.0-rc.2/gost-linux-amd64-3.0.0-rc.2.gz \
+    && curl -skSLO https://github.com/go-gost/gost/releases/download/v3.0.0-rc.3/gost-linux-amd64-3.0.0-rc.3.gz \
     && gunzip gost-*.gz \
     && chmod a+x gost-* \
     && ln -sf gost-* gost \
