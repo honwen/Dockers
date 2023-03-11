@@ -11,9 +11,10 @@ RUN cd /usr/bin \
 
 ENV \
   mode='server' \
+  listen_addr='0.0.0.0' \
   listen_port='443' \
   upstream='bing.com:443' \
   key='key' \
   EXTRA_ARGS='-q'
 
-CMD "$(which noisy-shuttle)" "$mode" "0.0.0.0:$listen_port" "$upstream" "$key" $EXTRA_ARGS
+CMD "$(which noisy-shuttle)" "$mode" "${listen_addr}:${listen_port}" "$upstream" "$key" $EXTRA_ARGS
