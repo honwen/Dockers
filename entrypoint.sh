@@ -22,7 +22,7 @@ convertClients() {
   done
 }
 
-genJsonClients() {
+genClients() {
   cat <<EOF | sed '/==TOD==/d' | jq '.'
 [
   $(convertClients $1 ${XRAY_REALITY_NETWORK})==TOD==
@@ -34,26 +34,37 @@ convertToList() {
   echo $1 | sed 's+[ \t]*++g; s+^+"+g; s+,*$+"+g; s+,+","+g'
 }
 
-genBanCHNIP() {
-  [ "V${XRAY_BANCNIP}" = "V1" ] || return
+genRoutes() {
+  XRAY_REDIR_GEO="${XRAY_REDIR_GEO};${XRAY_REDIR_GEO_EXRTA}"
+  [ "V${XRAY_REDIR_GEO}" = "V;" ] && return
   cat <<EOF
   "routing": {
       "domainStrategy": "IPIfNonMatch",
       "rules": [
           {
               "type": "field",
-              "ip": [
-                  "geoip:cn"
-              ],
-              "outboundTag": "block"
+              "domain": [$(echo ${XRAY_REDIR_GEO} | sed 's+[;,]+\n+g' | sort -u | grep 'geosite' |
+    sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g')],
+              "outboundTag": "redir"
+          },
+          {
+              "type": "field",
+              "ip": [$(echo ${XRAY_REDIR_GEO} | sed 's+[;,]+\n+g' | sort -u | grep 'geoip' |
+      sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g')],
+              "outboundTag": "redir"
           }
       ]
   },
 EOF
 }
 
-# Xray config Init
+genOtherOutbounds() {
+  [ "V${XRAY_REDIR_DST}" = "V" ] && return
+  echo ','
+  echo ${XRAY_REDIR_DST} | jq '.tag = "redir"'
+}
 
+# Xray config Init
 [ -e ${XRAY_CONFIG} ] || {
   cat <<EOF | jq '.' | tee ${XRAY_CONFIG}
 {
@@ -65,7 +76,7 @@ EOF
       "port": ${XRAY_REALITY_PORT},
       "protocol": "vless",
       "settings": {
-        "clients": $(genJsonClients $USERS),
+        "clients": $(genClients $USERS),
         "decryption": "none"
       },
       "streamSettings": {
@@ -84,16 +95,12 @@ EOF
         }
       }
     }
-  ],$(genBanCHNIP)
+  ],$(genRoutes)
   "outbounds": [
     {
       "protocol": "freedom",
       "tag": "direct"
-    },
-    {
-        "protocol": "blackhole",
-        "tag": "block"
-    }
+    }$(genOtherOutbounds)
   ]
 }
 EOF

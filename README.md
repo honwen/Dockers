@@ -5,6 +5,7 @@
 ### Thanks
 
 - https://github.com/XTLS/Xray-core
+- https://github.com/Loyalsoldier/v2ray-rules-dat
 
 ### Usage
 
