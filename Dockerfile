@@ -20,9 +20,6 @@ RUN set -ex \
     && xray-plugin -version \
     && ln -sf xray-plugin v2ray-plugin \
     \
-    && curl -skSL $(curl -skSL 'https://api.github.com/repos/maskedeken/gost-plugin/releases/latest' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\).*/\1/p}') | tar xzv --strip-components=1 linux-amd64/gost-plugin \
-    && gost-plugin -version \
-    \
     && curl -skSL $(curl -skSL 'https://api.github.com/repos/ihciah/shadow-tls/releases/latest' | sed -n '/url.*x86_64/{s/.*\(https:.*linux-musl\).*/\1/p}') -o shadow-tls \
     && chmod a+x shadow-tls \
     && shadow-tls -V \

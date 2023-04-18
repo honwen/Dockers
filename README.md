@@ -6,7 +6,6 @@
 
 - https://github.com/shadowsocks/shadowsocks-rust
 - https://github.com/shadowsocks/simple-obfs
-- https://github.com/maskedeken/gost-plugin
 - https://github.com/teddysun/xray-plugin
 - https://github.com/ihciah/shadow-tls
 - https://github.com/xtaci/kcptun
