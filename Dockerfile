@@ -15,7 +15,7 @@ RUN set -ex \
     && for it in ssserver ssmanager sslocal; do ln -sf ssservice $it; done \
     && ssserver -V \
     \
-    && curl -skSL $(curl -skSL 'https://api.github.com/repos/teddysun/xray-plugin/releases/latest' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\).*/\1/p}') | tar xzv \
+    && curl -skSL $(curl -skSL 'https://api.github.com/repos/teddysun/xray-plugin/releases/latest' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\).*/\1/p}' | sed 's+1.7.5+1.8.1+g') | tar xzv \
     && mv xray-plugin* xray-plugin \
     && xray-plugin -version \
     && ln -sf xray-plugin v2ray-plugin \
