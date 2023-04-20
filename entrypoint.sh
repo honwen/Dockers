@@ -35,24 +35,49 @@ convertToList() {
 }
 
 genRoutes() {
-  XRAY_REDIR_GEO="${XRAY_REDIR_GEO};${XRAY_REDIR_GEO_EXRTA}"
-  [ "V${XRAY_REDIR_GEO}" = "V;" ] && return
+  [ "V${1}" = "V" ] && return
+  geosite=$(echo ${1} | sed 's+[;,]+\n+g' | sort -u | grep 'geosite' | sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g')
+  domain=$(echo ${1} | sed 's+[;,]+\n+g' | sort -u | grep -v 'geo.*:' | grep '[a-z]$' | sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g')
+  [ "V${domain}" != "V" ] && {
+    [ "V${geosite}" = "V" ] && geosite="${domain}" || geosite="${geosite},${domain}"
+  }
+
+  geoip=$(echo ${1} | sed 's+[;,]+\n+g' | sort -u | grep 'geoip' | sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g')
+  ip=$(echo ${1} | sed 's+[;,]+\n+g' | sort -u | grep -v 'geo.*:' | grep -v '[a-z]$' | sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g')
+  [ "V${ip}" != "V" ] && {
+    [ "V${geoip}" = "V" ] && geoip="${ip}" || geoip="${geosite},${ip}"
+  }
+
+  [ "V${geosite}" != "V" ] && cat <<EOF
+          {
+              "type": "field",
+              "domain": [${geosite}],
+              "outboundTag": "${2:-redir}"
+          }
+EOF
+  [ "V${geosite}" != "V" -a "V${geoip}" != "V" ] && echo ','
+  [ "V${geoip}" != "V" ] && cat <<EOF
+          {
+              "type": "field",
+              "ip": [${geoip}],
+              "outboundTag": "${2:-redir}"
+          }
+EOF
+}
+
+genRouting() {
+  [ "V${XRAY_REDIR_GEO_EX}" != "V" ] && {
+    [ "V${XRAY_REDIR_GEO}" = "V" ] && XRAY_REDIR_GEO="${XRAY_REDIR_GEO_EX}" || XRAY_REDIR_GEO="${XRAY_REDIR_GEO};${XRAY_REDIR_GEO_EX}"
+  }
+  [ "V${XRAY_REDIR_GEO}" = "V" -a "V${XRAY_REDIR_GEO_EXTRA}" = "V" ] && return
   cat <<EOF
   "routing": {
       "domainStrategy": "IPIfNonMatch",
-      "rules": [
-          {
-              "type": "field",
-              "domain": [$(echo ${XRAY_REDIR_GEO} | sed 's+[;,]+\n+g' | sort -u | grep 'geosite' |
-    sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g')],
-              "outboundTag": "redir"
-          },
-          {
-              "type": "field",
-              "ip": [$(echo ${XRAY_REDIR_GEO} | sed 's+[;,]+\n+g' | sort -u | grep 'geoip' |
-      sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g')],
-              "outboundTag": "redir"
-          }
+      "rules": [$(
+    genRoutes ${XRAY_REDIR_GEO_EXTRA:-''} 'extra'
+    [ "V${XRAY_REDIR_GEO}" != "V" -a "V${XRAY_REDIR_GEO_EXTRA}" != "V" ] && echo ','
+    genRoutes ${XRAY_REDIR_GEO:-''}
+  )
       ]
   },
 EOF
@@ -60,6 +85,10 @@ EOF
 
 genOtherOutbounds() {
   [ "V${XRAY_REDIR_DST}" = "V" ] && return
+  [ "V${XRAY_REDIR_GEO_EXTRA}" != "V" ] && {
+    echo ','
+    echo ${XRAY_REDIR_DST_EXTRA:-${XRAY_REDIR_DST}} | jq '.tag = "extra"'
+  }
   echo ','
   echo ${XRAY_REDIR_DST} | jq '.tag = "redir"'
 }
@@ -95,7 +124,7 @@ genOtherOutbounds() {
         }
       }
     }
-  ],$(genRoutes)
+  ],$(genRouting)
   "outbounds": [
     {
       "protocol": "freedom",
