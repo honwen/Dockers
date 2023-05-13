@@ -31,21 +31,26 @@ EOF
 }
 
 convertToList() {
-  echo $1 | sed 's+[ \t]*++g; s+^+"+g; s+,*$+"+g; s+,+","+g'
+  echo "$1" | sed 's+[ \t]*++g; s+^+"+g; s+,*$+"+g; s+,+","+g'
+}
+
+linesToList() {
+  [ "V$1" = "V" ] && return
+  echo "$1" | sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g'
 }
 
 genRoutes() {
   [ "V${1}" = "V" ] && return
-  geosite=$(echo ${1} | sed 's+[;,]+\n+g' | sort -u | grep 'geosite' | sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g')
-  domain=$(echo ${1} | sed 's+[;,]+\n+g' | sort -u | grep -v 'geo.*:' | grep '[a-z]$' | sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g')
+  geosite=$(linesToList "$(echo ${1} | sed 's+[;,]+\n+g' | sort -u | grep -e '^\(geosite\|regexp\):')")
+  domain=$(linesToList "$(echo ${1} | sed 's+[;,]+\n+g' | sort -u | grep -ve '^\(geo[a-z]*\|regexp\):' | grep '[a-z]$')")
   [ "V${domain}" != "V" ] && {
     [ "V${geosite}" = "V" ] && geosite="${domain}" || geosite="${geosite},${domain}"
   }
 
-  geoip=$(echo ${1} | sed 's+[;,]+\n+g' | sort -u | grep 'geoip' | sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g')
-  ip=$(echo ${1} | sed 's+[;,]+\n+g' | sort -u | grep -v 'geo.*:' | grep -v '[a-z]$' | sed 's+^+"+g; s+$+"+g' | tr '\n' ',' | sed 's+,$++g')
+  geoip=$(linesToList "$(echo ${1} | sed 's+[;,]+\n+g' | sort -u | grep 'geoip')")
+  ip=$(linesToList "$(echo ${1} | sed 's+[;,]+\n+g' | sort -u | grep -ve '^\(geo[a-z]*\|regexp\):' | grep -v '[a-z]$')")
   [ "V${ip}" != "V" ] && {
-    [ "V${geoip}" = "V" ] && geoip="${ip}" || geoip="${geosite},${ip}"
+    [ "V${geoip}" = "V" ] && geoip="${ip}" || geoip="${geoip},${ip}"
   }
 
   [ "V${geosite}" != "V" ] && cat <<EOF
@@ -104,6 +109,10 @@ genOtherOutbounds() {
     {
       "port": ${XRAY_REALITY_PORT},
       "protocol": "vless",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
       "settings": {
         "clients": $(genClients $USERS),
         "decryption": "none"
