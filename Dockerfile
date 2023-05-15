@@ -11,7 +11,6 @@ RUN cd /tmp \
   jq -r '.assets[]|.browser_download_url' | grep 'musl-x64.tar.gz$') | tar -C /usr/bin -zxv \
   && udphop
 
-
 ADD entrypoint.sh /
 
 CMD ["/entrypoint.sh"]
