@@ -16,6 +16,7 @@ echo >&2 "# Info: Config Init"
 }
 
 echo "$(jq ".inbounds[0].listen = \"${LISTEN:-0.0.0.0}\"" ${CONFIG})" >${CONFIG}
+echo "$(jq ".inbounds[0].listen_port = ${LISTEN_PORT:-2000}" ${CONFIG})" >${CONFIG}
 
 jq . ${CONFIG} >&2
 
