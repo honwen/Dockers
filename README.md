@@ -4,17 +4,21 @@
 
 ### Thanks
 
-- https://github.com/SagerNet/sing-box
-- https://gitlab.com/ProjectWARP/warp-go
+<!-- - https://github.com/SagerNet/sing-box -->
+- https://github.com/badafans/warp-reg
 
 ### Usage
 
 ```shell
 $ docker pull chenhw2/warp2socks
 
-$ docker run -d \
-    --name warp2socks \
+$ docker run --rm \
     -v /opt/warp:/warp \
-    -p 1080:2000 \
     chenhw2/warp2socks
+
+$ docker run --rm \
+    --name warp2socks \
+    -v /opt/warp:/opt:ro \
+    --network=host \
+    chenhw2/sing-box
 ```
