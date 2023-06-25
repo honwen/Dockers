@@ -20,7 +20,7 @@ echo >&2 "# Info: Config Init"
   private_key=$(sed -n 's+^private_key: *++p' ${source})
   peer_public_key=$(sed -n 's+^public_key: *++p' ${source})
 
-  cat <<-EOF | jq '.' | tee ${CONFIG}
+  cat <<-EOF | yq -o=json '.' | tee ${CONFIG}
 {
   "inbounds": [
     {
@@ -61,7 +61,7 @@ EEE
 EOF
 }
 
-jq . ${CONFIG} >&2
+yq -o=json . ${CONFIG} >&2
 
 echo >&2 "# Info: Config Done"
 
