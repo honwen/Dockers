@@ -5,9 +5,8 @@ LABEL MAINTAINER="https://github.com/honwen"
 # /opt/share/xray/geo*.dat
 RUN mkdir -p /opt/share/xray/ /tmp /var/cache/apk \
     && cd /tmp \
-    && curl -skSLO $(curl -skSL 'https://api.github.com/repos/XTLS/Xray-core/releases/latest' \
-    # | jq -r '.assets[]|.browser_download_url' | grep 'linux-64.zip$') \
-    | jq -r '.assets[]|.browser_download_url' | grep 'linux-64.zip$' | sed 's+download/v[^/]*+download/v1.8.1+g') \
+    && curl -skSLO $(curl -skSL 'https://api.github.com/repos/XTLS/Xray-core/releases' \
+    | yq -r '.[]|.assets[]|.browser_download_url' | grep 'linux-64.zip$' | head -n1) \
     && unzip Xray-linux-64.zip \
     && chmod a+x xray \
     && mv xray /usr/bin/ \

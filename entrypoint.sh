@@ -14,16 +14,16 @@ convertClients() {
     uuid=$(echo -n $user | sed 's_:.*__g')
     email=$(echo -n $user | sed 's_.*:__g')
     if [ "${2:-tcp}" = "tcp" ]; then
-      echo '{}' | jq ".|{id:\"$uuid\",email:\"$email\",flow:\"xtls-rprx-vision\"}"
+      yq -n -o=json ".id=\"$uuid\" | .email=\"$email\" | .flow=\"xtls-rprx-vision\""
     else
-      echo '{}' | jq ".|{id:\"$uuid\",email:\"$email\"}"
+      yq -n -o=json ".id=\"$uuid\" | .email=\"$email\""
     fi
     echo ','
   done
 }
 
 genClients() {
-  cat <<EOF | sed '/==TOD==/d' | jq '.'
+  cat <<EOF | sed '/==TOD==/d' | yq -o=json '.'
 [
   $(convertClients $1 ${XRAY_REALITY_NETWORK})==TOD==
 ]
@@ -92,20 +92,40 @@ genOtherOutbounds() {
   [ "V${XRAY_REDIR_DST}" = "V" ] && return
   [ "V${XRAY_REDIR_GEO_EXTRA}" != "V" ] && {
     echo ','
-    echo ${XRAY_REDIR_DST_EXTRA:-${XRAY_REDIR_DST}} | jq '.tag = "extra"'
+    echo ${XRAY_REDIR_DST_EXTRA:-${XRAY_REDIR_DST}} | yq -o=json '.tag="extra"'
   }
   echo ','
-  echo ${XRAY_REDIR_DST} | jq '.tag = "redir"'
+  echo ${XRAY_REDIR_DST} | yq -o=json '.tag="redir"'
 }
 
 # Xray config Init
 [ -e ${XRAY_CONFIG} ] || {
-  cat <<EOF | jq '.' | tee ${XRAY_CONFIG}
+  cat <<EOF | yq -o=json '.' | tee ${XRAY_CONFIG}
 {
   "log": {
     "loglevel": "warning"
   },
   "inbounds": [
+  $([ "V${SOCKS_ADDR}" != "V" ] && {
+    echo "$SOCKS_ADDR" | sed 's+[,; ]+\n+g' | sort -u | while read it; do
+      [ "V${it}" = "V" ] && continue
+      cat <<FFF | yq -o=json '.'
+    {
+      "protocol": "socks",
+      "port": ${SOCKS_PORT:-1080},
+      "listen": "${it}",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "udp": true
+      }
+    }
+FFF
+      echo ','
+    done
+  })
     {
       "port": ${XRAY_REALITY_PORT},
       "protocol": "vless",
