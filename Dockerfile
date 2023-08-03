@@ -1,7 +1,7 @@
 FROM chenhw2/alpine:base
 LABEL MAINTAINER HONWEN <https://github.com/honwen>
 
-ARG VER=0.51.0
+ARG VER=0.51.2
 ARG URL=https://github.com/fatedier/frp/releases/download/v${VER}/frp_${VER}_linux_amd64.tar.gz
 
 # /usr/bin/{frps, frpc}
