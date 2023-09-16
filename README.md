@@ -4,18 +4,16 @@
 
 ### Thanks
 
-- https://github.com/tobyxdd/hysteria
+- https://github.com/apernet/hysteria
 
 ### Usage
 
-```
+```shell
 $ docker pull chenhw2/hysteria
 
 $ docker run -d \
     --name hysteria \
-    -e ACME_DOMAIN=hysteria.example.org \
-    -e OBFS_KEY=$(uuidgen) \
-    -v /etc/ssl/caddy:/etc/ssl/caddy \
+    -v /etc/hysteria.yaml:/opt/config.yaml:ro \
     -p 443:443/udp \
     chenhw2/hysteria:latest
 ```
