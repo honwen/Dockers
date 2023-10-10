@@ -4,11 +4,11 @@ LABEL MAINTAINER="https://github.com/honwen"
 # /usr/bin/kcptube
 RUN cd /tmp \
   && curl -skSL $(curl -skSL 'https://api.github.com/repos/cnbatch/kcptube/releases/latest' | \
-  jq -r '.assets[]|.browser_download_url' | grep 'musl-x64.tar.gz$') | tar -C /usr/bin -zxv \
+  yq -r '.assets[]|.browser_download_url' | grep 'musl-x64.tar') | tar -C /usr/bin -jxv \
   && kcptube \
   \
   && curl -skSL $(curl -skSL 'https://api.github.com/repos/cnbatch/udphop/releases/latest' | \
-  jq -r '.assets[]|.browser_download_url' | grep 'musl-x64.tar.gz$') | tar -C /usr/bin -zxv \
+  yq -r '.assets[]|.browser_download_url' | grep 'musl-x64.tar') | tar -C /usr/bin -jxv \
   && udphop
 
 ADD entrypoint.sh /
