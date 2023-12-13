@@ -14,6 +14,7 @@ To get you started, a set of packages have been integrated:
 
 - curl
 - wget
+- yq
 - net-tools # netstat
 - procps # ps
 
