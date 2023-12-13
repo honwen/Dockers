@@ -13,10 +13,11 @@ RUN set -ex && cd / \
 COPY --from=gost /usr/bin/gost /usr/bin/
 COPY --from=us /usr/bin/udp-speeder /usr/bin/
 COPY --from=plugin /usr/bin/xray-plugin /usr/bin/
-COPY --from=plugin /usr/bin/gost-plugin /usr/bin/
 COPY --from=plugin /usr/bin/kcpc /usr/bin/
 COPY --from=plugin /usr/bin/kcps /usr/bin/
 COPY --from=plugin /usr/bin/kcptun /usr/bin/
+COPY --from=plugin /usr/bin/kcptube /usr/bin/
+COPY --from=plugin /usr/bin/kcptube-plugin /usr/bin/
 COPY --from=plugin /usr/bin/shadow-tls /usr/bin/
 
 ENV WS_PATH='/websocket' \
