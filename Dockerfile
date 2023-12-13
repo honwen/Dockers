@@ -1,7 +1,7 @@
 FROM chenhw2/alpine:base
 LABEL MAINTAINER CHENHW2 <https://github.com/chenhw2>
 
-ARG VER=20210116.0
+ARG VER=20230206.0
 ARG URL=https://github.com/wangyu-/UDPspeeder/releases/download/${VER}/speederv2_binaries.tar.gz
 
 # /usr/bin/udp-speeder
