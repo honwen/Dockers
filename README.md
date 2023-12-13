@@ -21,6 +21,7 @@ To get you started, a set of packages have been integrated:
 - curl
 - wget
 - ca-certificates
+- yq
 
 ### Time Zone
 Hong Kong Time Offset: UTC/GMT +8
