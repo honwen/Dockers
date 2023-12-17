@@ -10,7 +10,7 @@ RUN set -ex \
     && apk add --update --no-cache curl wget ca-certificates yq tzdata \
     && update-ca-certificates \
     && echo $TZ > /etc/timezone \
-    && ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && cp -Lf /usr/share/zoneinfo/$TZ /etc/localtime \
     && date \
     && apk del tzdata \
     && rm -rf /var/cache/apk/*
