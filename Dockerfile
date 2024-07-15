@@ -2,10 +2,10 @@
 # Dockerfile for shadowsocks-rust, simple-obfs and v2ray-plugin/xray-plugin
 #
 
-FROM chenhw2/libev-build:musl as obfs
+FROM chenhw2/libev-build:musl AS obfs
 
 FROM chenhw2/alpine:base
-LABEL MAINTAINER HONWEN <https://github.com/honwen>
+LABEL MAINTAINER='HONWEN <https://github.com/honwen>'
 
 COPY --from=obfs /usr/bin/obfs* /usr/bin/
 
@@ -40,4 +40,4 @@ RUN set -ex \
 
 ENV ARGS='-c=/var/config.json'
 
-CMD ssserver ${ARGS} ${NODELAY:+--tcp-no-delay} ${FASTOPEN:+--tcp-fast-open}
+CMD ["/bin/sh", "-c", "$(which ssserver) ${ARGS} ${NODELAY:+--tcp-no-delay} ${FASTOPEN:+--tcp-fast-open}"]
