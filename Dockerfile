@@ -1,5 +1,5 @@
 FROM chenhw2/alpine:base
-LABEL MAINTAINER HONWEN <https://github.com/honwen>
+LABEL MAINTAINER="HONWEN <https://github.com/honwen>"
 
 # /usr/bin/gost
 RUN mkdir -p /usr/bin/ \
@@ -9,4 +9,5 @@ RUN mkdir -p /usr/bin/ \
     && gost -V
 
 ENV ARGS="-L=:8080"
-CMD /usr/bin/gost ${ARGS} ${METRIC:+-metrics=:${METRIC}}
+
+CMD ["/bin/sh", "-c", "/usr/bin/gost ${ARGS} ${METRIC:+-metrics=:${METRIC}}"]
