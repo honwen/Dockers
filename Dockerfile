@@ -1,8 +1,8 @@
-FROM chenhw2/udp-speeder as us
-FROM chenhw2/ss-obfs as plugin
-FROM chenhw2/gost3 as gost
+FROM chenhw2/udp-speeder AS us
+FROM chenhw2/ss-obfs AS plugin
+FROM chenhw2/gost3 AS gost
 
-FROM chenhw2/debian:base as temp
+FROM chenhw2/debian:base AS temp
 
 COPY --from=gost /usr/bin/gost /usr/bin/
 COPY --from=us /usr/bin/udp-speeder /usr/bin/
