@@ -10,7 +10,7 @@
 
 ### Usage
 
-```
+```shell
 $ docker pull chenhw2/ssvpn
 
 $ docker run -d \
@@ -22,14 +22,14 @@ $ docker run -d \
 
 ### ENV
 
-```
+```shell
 ENV GOST_ARGS=ss://AEAD_AES_128_GCM:your-password@
 ENV NIC=10.9.8.0
 ```
 
 ### Client
 
-```
+```shell
 /usr/bin/gost -L=tcp://:1194/127.0.0.1:1194 -F=ss://AEAD_...@...
 openvpn --dev tun --remote 127.0.0.1 --proto tcp-client --port 1194 --ifconfig 10.9.8.2 10.9.8.1 --keepalive 10 120
 ```

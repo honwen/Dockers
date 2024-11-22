@@ -12,10 +12,10 @@ ADD entrypoint.sh /usr/bin/
 FROM chenhw2/debian:base
 LABEL MAINTAINER="https://github.com/honwen/Dockers"
 
-RUN set -ex && cd / \
+RUN set -ex && cd /tmp \
     && apt update -y --allow-releaseinfo-change \
     && apt install -y --no-install-recommends iptables openvpn \
-    && rm -rf /tmp/* /var/cache/apt/* /var/log/*
+    && rm -rf /var/cache/apt/* /var/cache/debconf/*-old /var/log/apt/* /var/log/*.log
 
 COPY --from=temp /usr/bin/entrypoint.sh /usr/bin/gost /usr/bin/udp-speeder \
     /usr/bin/xray-plugin /usr/bin/shadow-tls \
