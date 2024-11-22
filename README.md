@@ -20,3 +20,8 @@ To get you started, a set of packages have been integrated:
 
 ### Time Zone
 Hong Kong Time Offset: UTC/GMT +8
+
+
+### Build
+
+`docker build --pull -t chenhw2/debian:base base`
