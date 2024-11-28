@@ -22,6 +22,9 @@ echo >&2 "# Info: Config Init"
 
   cat <<-EOF | yq -o=json '.' | tee ${CONFIG}
 {
+  "dns": {
+    "strategy": "prefer_ipv4"
+  },
   "inbounds": [
     {
       "listen": "${LISTEN:-0.0.0.0}",
