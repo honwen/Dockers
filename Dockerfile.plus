@@ -1,0 +1,21 @@
+FROM chenhw2/alpine:base
+LABEL MAINTAINER="https://github.com/honwen"
+
+# /usr/bin/sing-box /data/geo*.db
+RUN cd /tmp \
+  && curl -skSLO $( \
+  curl -skSL 'https://api.github.com/repos/kyochikuto/sing-box-plus/releases/latest' | \
+  yq -r '.assets[]|.browser_download_url' | grep 'linux-amd64.zip$' \
+  ) \
+  && unzip sing-box-*-linux-amd64.zip -d /usr/bin/ \
+  && sing-box version \
+  && rm -rf /tmp/* /usr/bin/LICENSE \
+  && mkdir -p /geodata \
+  && cd /geodata \
+  && curl -skSLO https://github.com/soffchen/sing-geoip/releases/latest/download/geoip.db \
+  && curl -skSLO https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db
+# && curl -skSLO https://github.com/SagerNet/sing-geoip/releases/latest/download/geoip.db \
+# && curl -skSLO https://github.com/SagerNet/sing-geosite/releases/latest/download/geosite.db
+
+CMD ["sing-box", "run", "-c", "/opt/config.json"]
+
