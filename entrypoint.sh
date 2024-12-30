@@ -68,6 +68,7 @@ EOF
               "outboundTag": "${2:-redir}"
           }
 EOF
+  echo -n ','
 }
 
 genRouting() {
@@ -75,17 +76,19 @@ genRouting() {
     [ "V${XRAY_REDIR_GEO}" = "V" ] && XRAY_REDIR_GEO="${XRAY_REDIR_GEO_EX}" || XRAY_REDIR_GEO="${XRAY_REDIR_GEO};${XRAY_REDIR_GEO_EX}"
   }
   [ "V${XRAY_REDIR_GEO}" = "V" -a "V${XRAY_REDIR_GEO_EXTRA}" = "V" ] && return
-  cat <<EOF
-  "routing": {
+  echo -n '  "routing": '
+  cat <<EOF | sed 's+,_LIST_END_+]+g' | yq -o=json '.'
+  {
       "domainStrategy": "IPIfNonMatch",
-      "rules": [$(
+      "rules": [
+$(
+    genRoutes ${XRAY_DIRECT_GEO:-''} 'direct'
     genRoutes ${XRAY_REDIR_GEO_EXTRA:-''} 'extra'
-    [ "V${XRAY_REDIR_GEO}" != "V" -a "V${XRAY_REDIR_GEO_EXTRA}" != "V" ] && echo ','
     genRoutes ${XRAY_REDIR_GEO:-''}
-  )
-      ]
-  },
+  )_LIST_END_
+  }
 EOF
+  echo -n ","
 }
 
 genOtherOutbounds() {

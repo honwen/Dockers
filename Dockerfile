@@ -21,6 +21,7 @@ RUN mkdir -p /opt/share/xray/ /tmp /var/cache/apk \
 
 ENV XRAY_REDIR_GEO="geoip:cn;geosite:cn" \
     XRAY_REDIR_DST='{"protocol":"blackhole"}' \
+    XRAY_DIRECT_GEO="cp.cloudflare.com;geoip:google;geosite:google;geosite:apple;geosite:microsoft" \
     USERS="uuid00;uuid01:email01;uuid02:email02"
 
 ADD entrypoint.sh /
