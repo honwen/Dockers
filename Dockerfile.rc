@@ -17,5 +17,8 @@ RUN cd /tmp \
 # && curl -skSLO https://github.com/SagerNet/sing-geoip/releases/latest/download/geoip.db \
 # && curl -skSLO https://github.com/SagerNet/sing-geosite/releases/latest/download/geosite.db
 
+ENV ENABLE_DEPRECATED_GEOSITE=true \
+    ENABLE_DEPRECATED_GEOIP=true
+
 CMD ["sing-box", "run", "-c", "/opt/config.json"]
 
