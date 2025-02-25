@@ -19,4 +19,4 @@ RUN set -ex && cd /tmp \
     && ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
     && date \
     && locale \
-    && rm -rf /var/cache/apt/* /var/cache/debconf/*-old /var/log/apt/* /var/log/*.log
+    && rm -rf /var/cache/apt/* /var/lib/apt/lists/* /var/cache/debconf/*-old /var/log/apt/* /var/log/*.log
