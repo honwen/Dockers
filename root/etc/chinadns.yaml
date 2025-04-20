@@ -1,15 +1,8 @@
 ---
 verbosity: info
-address: 127.0.0.1:7900
+address: 0.0.0.0:7900
 table:
   start:
-  #   if: 'qtype([AAAA,INT(65)])'
-  #   then:
-  #     - blackhole
-  #     - end
-  #   else:
-  #     - dispatch
-  # dispatch:
     - query: cn
     - check_secure
   check_secure:
