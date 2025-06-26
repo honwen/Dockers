@@ -17,6 +17,7 @@ RUN set -ex && cd /tmp \
     && chmod a+x /usr/bin/yq \
     && echo $TZ >/etc/timezone \
     && ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && ln -sf bash $(which sh) \
     && date \
     && locale \
     && rm -rf /var/cache/apt/* /var/lib/apt/lists/* /var/cache/debconf/*-old /var/log/apt/* /var/log/*.log
