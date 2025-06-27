@@ -8,7 +8,8 @@ RUN cd /tmp \
     && dnsproxy --version \
     && rm -rf /tmp/*
 
-ENV ARGS="--cache --cache-optimistic --edns --upstream-mode=fastest_addr --tls-min-version=1.2 -u=tls://8.8.4.4 -u=tls://162.159.36.1 -u=https://149.112.112.11/dns-query -f=tcp://9.9.9.11:9953"
+ENV ARGS="--timeout=500ms --cache --cache-optimistic --edns --upstream-mode=fastest_addr --tls-min-version=1.2 -u=tls://8.8.4.4 -u=tls://162.159.36.1 -f=tcp://9.9.9.11:9953"
 # ENV ARGS_SP="-u=[/github.com/]tcp://80.80.80.80 -u=[/githubassets.com/]tcp://80.80.80.80 -u=[/githubusercontent.com/]tcp://80.80.80.80"
 
 CMD ["/bin/sh", "-c", "/usr/bin/dnsproxy ${ARGS} ${ARGS_SP}"]
+
