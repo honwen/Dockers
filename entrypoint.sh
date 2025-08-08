@@ -2,9 +2,11 @@
 
 XRAY_CONFIG=/opt/xray.json
 
+XRAY_LOGLEVEL='warning'
 XRAY_REALITY_PORT=${XRAY_REALITY_PORT:-443}
-XRAY_REALITY_NETWORK=${XRAY_REALITY_NETWORK:-'tcp'} # h2
+XRAY_REALITY_NETWORK=${XRAY_REALITY_NETWORK:-'raw'} # h2
 XRAY_REALITY_DEST=${XRAY_REALITY_DEST:-'127.0.0.1:443'}
+XRAY_REALITY_PATH=${XRAY_REALITY_PATH:-'/x'}
 XRAY_REALITY_SN=${XRAY_REALITY_SN:-'example.org,demo.example.com'}
 XRAY_REALITY_SID=${XRAY_REALITY_SID:-'ab,abcd,123456'}
 XRAY_REALITY_PRKEY=${XRAY_REALITY_PRKEY:-$(xray x25519 | sed -n 's+Private.*: *++p')}
@@ -13,10 +15,10 @@ convertClients() {
   echo $1 | sed 's_;_\n_g' | while read user; do
     uuid=$(echo -n $user | sed 's_:.*__g')
     email=$(echo -n $user | sed 's_.*:__g')
-    if [ "${2:-tcp}" = "tcp" ]; then
+    if [ "${2:-raw}" = "raw" ]; then
       yq -n -o=json ".id=\"$uuid\" | .email=\"$email\" | .flow=\"xtls-rprx-vision\""
     else
-      yq -n -o=json ".id=\"$uuid\" | .email=\"$email\""
+      yq -n -o=json ".id=\"$uuid\" | .email=\"$email@$2\""
     fi
     echo ','
   done
@@ -25,7 +27,7 @@ convertClients() {
 genClients() {
   cat <<EOF | sed '/==TOD==/d' | yq -o=json '.'
 [
-  $(convertClients $1 ${XRAY_REALITY_NETWORK})==TOD==
+  $(convertClients $1 $2)==TOD==
 ]
 EOF
 }
@@ -81,6 +83,13 @@ genRouting() {
   {
       "domainStrategy": "IPIfNonMatch",
       "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "block"
+        },
 $(
     genRoutes ${XRAY_DIRECT_GEO:-''} 'direct'
     genRoutes ${XRAY_REDIR_GEO_EXTRA:-''} 'extra'
@@ -102,11 +111,12 @@ genOtherOutbounds() {
 }
 
 # Xray config Init
+# refer: https://github.com/lxhao61/integrated-examples/tree/main/Xray(M+K)
 [ -e ${XRAY_CONFIG} ] || {
   cat <<EOF | yq -o=json '.' | tee ${XRAY_CONFIG}
 {
   "log": {
-    "loglevel": "warning"
+    "loglevel": "${XRAY_LOGLEVEL}"
   },
   "inbounds": [
   $([ "V${SOCKS_ADDR}" != "V" ] && {
@@ -137,14 +147,20 @@ FFF
         "destOverride": ["http", "tls"]
       },
       "settings": {
-        "clients": $(genClients $USERS),
+        "clients": $(genClients $USERS ${XRAY_REALITY_NETWORK}),
+        "fallbacks": [
+          {
+            "dest": "@xhttp.sock",
+            "xver": 1
+          }
+        ],
         "decryption": "none"
       },
       "streamSettings": {
         "network": "${XRAY_REALITY_NETWORK}",
         "security": "reality",
         "realitySettings": {
-          "dest": "${XRAY_REALITY_DEST}",
+          "target": "${XRAY_REALITY_DEST}",
           "serverNames": [
             $(convertToList ${XRAY_REALITY_SN})
           ],
@@ -153,6 +169,27 @@ FFF
           "shortIds": [
             $(convertToList ${XRAY_REALITY_SID})
           ]
+        }
+      }
+    },
+    {
+      "listen": "@xhttp.sock",
+      "protocol": "vless",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
+      },
+      "settings": {
+        "clients": $(genClients $USERS 'xhttp'),
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "xhttpSettings": {
+          "path": "${XRAY_REALITY_PATH}"
+        },
+        "sockopt": {
+          "acceptProxyProtocol": true
         }
       }
     }
