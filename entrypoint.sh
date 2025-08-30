@@ -9,7 +9,7 @@ mkdir -p $(dirname ${CONFIG})
 
 echo >&2 "# Info: Config Init"
 
-[ -e ${CONFIG} ] || {
+grep -q 'endpoints' "${CONFIG}" 2>/dev/null || {
   echo >&2 "# Info: Config Renew"
 
   source='/tmp/info.txt'
@@ -22,8 +22,30 @@ echo >&2 "# Info: Config Init"
 
   cat <<-EOF | yq -o=json '.' | tee ${CONFIG}
 {
+  "log": {
+    "disabled": false,
+    "level": "debug",
+    "timestamp": true
+  },
   "dns": {
-    "strategy": "prefer_ipv4"
+    "servers": [
+      {
+        "tag": "local-dns",
+        "type": "local"
+      },
+      {
+        "tag": "google-doh",
+        "type": "https",
+        "server": "8.8.8.8",
+        "server_port": 443,
+        "path": "/dns-query",
+        "tls": {
+          "record_fragment": true
+        }
+      }
+    ],
+    "final": "google-doh",
+    "strategy": "ipv4_only"
   },
   "inbounds": [
     {
@@ -45,19 +67,49 @@ EEE
     }
   )
   ],
-  "outbounds": [
+  "endpoints": [
     {
       "type": "wireguard",
-      "server": "${server:-engage.cloudflareclient.com}",
-      "server_port": ${server_port:-2408},
-      "local_address": [
+      "tag": "warp-out",
+      "system": false,
+      "address": [
         "${local_v4}/32",
         "${local_v6}/128"
       ],
       "private_key": "${private_key}",
-      "peer_public_key": "${peer_public_key:-bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=}",
-      "reserved": ${reserved},
+      "peers": [
+        {
+          "address": "${server:-engage.cloudflareclient.com}",
+          "port": 2408,
+      		"public_key": "${peer_public_key:-bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=}",
+          "allowed_ips": ["0.0.0.0/0"],
+          "reserved": ${reserved},
+          "warp_scanner": {
+            "enable_ip_scanner": ${WARP_AUTO_IP:-true},
+            "enable_port_scanner": ${WARP_AUTO_PORT:-false},
+            "cidrs": [
+              "162.159.192.0/24",
+              "188.114.96.0/24"
+            ]
+          },
+          "warp_noise": {
+            "enable": true,
+            "packet_count": "10-20",
+            "packet_delay": "1-5"
+          }
+        }
+      ],
       "mtu": 1280
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "urltest",
+      "tag": "auto",
+      "outbounds": [
+        "warp-out"
+      ],
+      "url": "http://cp.cloudflare.com"
     }
   ]
 }
@@ -67,5 +119,3 @@ EOF
 yq -o=json . ${CONFIG} >&2
 
 echo >&2 "# Info: Config Done"
-
-# $(which sing-box) format -c ${CONFIG}
