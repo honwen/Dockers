@@ -5,22 +5,31 @@ set -e
 CONFIG=${CONFIG:-/warp/config.json}
 mkdir -p $(dirname ${CONFIG})
 
-# config Init
+grep -q 'endpoints' "${CONFIG}" || {
+  echo >&2 "# Info: Config Clean"
+  rm -f ${CONFIG}
+}
 
-echo >&2 "# Info: Config Init"
-
-grep -q 'endpoints' "${CONFIG}" 2>/dev/null || {
-  echo >&2 "# Info: Config Renew"
-
+if grep -q 'endpoints' "${CONFIG}" 2>/dev/null; then
+  local_v4="$(yq -roy '.endpoints[0].address[0]' ${CONFIG} | sed 's+/.*++g')"
+  local_v6="$(yq -roy '.endpoints[0].address[1]' ${CONFIG} | sed 's+/.*++g')"
+  reserved="[$(yq -roc '.endpoints[0].peers[0].reserved' ${CONFIG})]"
+  private_key="$(yq -roj '.endpoints[0].private_key' ${CONFIG})"
+  peer_public_key="$(yq -roc '.endpoints[0].peers[0].public_key' ${CONFIG})"
+else
   source='/tmp/info.txt'
   $(which warp-reg) | tee ${source}
-  local_v4=$(sed -n 's+^v4: *++p' ${source})
-  local_v6=$(sed -n 's+^v6: *++p' ${source})
-  reserved=$(sed -n 's+^reserved: *++p' ${source})
-  private_key=$(sed -n 's+^private_key: *++p' ${source})
-  peer_public_key=$(sed -n 's+^public_key: *++p' ${source})
+  local_v4="$(sed -n 's+^v4: *++p' ${source})"
+  local_v6="$(sed -n 's+^v6: *++p' ${source})"
+  reserved="$(sed -n 's+^reserved: *++p' ${source})"
+  private_key="$(sed -n 's+^private_key: *++p' ${source})"
+  peer_public_key="$(sed -n 's+^public_key: *++p' ${source})"
+fi
 
-  cat <<-EOF | yq -o=json '.' | tee ${CONFIG}
+# https://github.com/kyochikuto/sing-box-plus/tree/main/examples
+echo >&2 "# Info: Config Generated"
+
+cat <<EOF | yq -oj . >${CONFIG}
 {
   "log": {
     "disabled": false,
@@ -47,6 +56,12 @@ grep -q 'endpoints' "${CONFIG}" 2>/dev/null || {
     "final": "google-doh",
     "strategy": "ipv4_only"
   },
+  "route": {
+    "default_domain_resolver": {
+      "server": "google-doh",
+      "rewrite_ttl": 600,
+    }
+  },
   "inbounds": [
     {
       "listen": "${LISTEN:-0.0.0.0}",
@@ -54,9 +69,9 @@ grep -q 'endpoints' "${CONFIG}" 2>/dev/null || {
       "udp_timeout": 300,
       "type": "socks"
     }$(
-    [ "V${EXTRA_LISTEN}" != "V" ] && {
-      echo ','
-      cat <<-EEE
+  [ "V${EXTRA_LISTEN}" != "V" ] && {
+    cat <<EEE
+    ,
     {
       "listen": "${EXTRA_LISTEN:-0.0.0.0}",
       "listen_port": ${EXTRA_LISTEN_PORT:-${LISTEN_PORT:-2000}},
@@ -64,8 +79,8 @@ grep -q 'endpoints' "${CONFIG}" 2>/dev/null || {
       "type": "socks"
     }
 EEE
-    }
-  )
+  }
+)
   ],
   "endpoints": [
     {
@@ -85,7 +100,7 @@ EEE
           "allowed_ips": ["0.0.0.0/0"],
           "reserved": ${reserved},
           "warp_scanner": {
-            "enable_ip_scanner": ${WARP_AUTO_IP:-true},
+            "enable_ip_scanner": ${WARP_AUTO_IP:-false},
             "enable_port_scanner": ${WARP_AUTO_PORT:-false},
             "cidrs": [
               "162.159.192.0/24",
@@ -93,9 +108,9 @@ EEE
             ]
           },
           "warp_noise": {
-            "enable": true,
-            "packet_count": "10-20",
-            "packet_delay": "1-5"
+            "enable": ${WARP_NOISE:-true},
+            "packet_count": "8-24",
+            "packet_delay": "1-4"
           }
         }
       ],
@@ -114,8 +129,7 @@ EEE
   ]
 }
 EOF
-}
 
-yq -o=json . ${CONFIG} >&2
+yq -oj . ${CONFIG} >&2
 
 echo >&2 "# Info: Config Done"
