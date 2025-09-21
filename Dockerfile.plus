@@ -9,13 +9,7 @@ RUN cd /tmp \
   ) \
   && unzip sing-box-*-linux-amd64.zip -d /usr/bin/ \
   && sing-box version \
-  && rm -rf /tmp/* /usr/bin/LICENSE \
-  && mkdir -p /geodata \
-  && cd /geodata \
-  && curl -skSLO https://github.com/soffchen/sing-geoip/releases/latest/download/geoip.db \
-  && curl -skSLO https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db
-# && curl -skSLO https://github.com/SagerNet/sing-geoip/releases/latest/download/geoip.db \
-# && curl -skSLO https://github.com/SagerNet/sing-geosite/releases/latest/download/geosite.db
+  && rm -rf /tmp/* /usr/bin/LICENSE
 
 CMD ["sing-box", "run", "-c", "/opt/config.json"]
 

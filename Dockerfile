@@ -9,16 +9,7 @@ RUN cd /tmp \
   ) \
   && tar -C /usr/bin --strip-components=1 -zxvf sing-box-*-linux-amd64.tar.gz \
   && sing-box version \
-  && rm -rf /tmp/* /usr/bin/LICENSE \
-  && mkdir -p /geodata \
-  && cd /geodata \
-  && curl -skSLO https://github.com/soffchen/sing-geoip/releases/latest/download/geoip.db \
-  && curl -skSLO https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db
-# && curl -skSLO https://github.com/SagerNet/sing-geoip/releases/latest/download/geoip.db \
-# && curl -skSLO https://github.com/SagerNet/sing-geosite/releases/latest/download/geosite.db
-
-ENV ENABLE_DEPRECATED_GEOSITE=true \
-    ENABLE_DEPRECATED_GEOIP=true
+  && rm -rf /tmp/* /usr/bin/LICENSE
 
 CMD ["sing-box", "run", "-c", "/opt/config.json"]
 
