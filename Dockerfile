@@ -3,20 +3,18 @@ LABEL MAINTAINER="https://github.com/honwen"
 
 ARG GHPROXY="https://"
 # ARG GHPROXY="https://files.m.daocloud.io/"
-# ARG GHPROXY="https://ghproxy.cn/https://"
+# ARG GHPROXY="https://ghproxy.cfd/https://"
 # ARG GHPROXY="https://cdn.wget.la/https://"
 
 RUN set -ex \
-    # && sed 's/dl-cdn.alpinelinux.org/mirrors.bfsu.edu.cn/g' -i /etc/apk/repositories \
+    && sed 's/dl-cdn.alpinelinux.org/mirrors.cernet.edu.cn/g' -i /etc/apk/repositories \
     && apk add --no-cache dnsmasq uuidgen tini \
-    && curl -skSL ${GHPROXY}github.com/atkrad/wait4x/releases/download/v3.2.0/wait4x-linux-amd64.tar.gz | tar -C /usr/bin -zx wait4x \
-    # && curl -skSL ${GHPROXY}github.com/mr-karan/doggo/releases/download/v1.0.5/doggo_1.0.5_Linux_x86_64.tar.gz | tar -C /usr/bin --strip-components 1 -zx doggo_1.0.5_Linux_x86_64/doggo \
+    && curl -skSL ${GHPROXY}github.com/atkrad/wait4x/releases/download/v3.5.1/wait4x-linux-amd64.tar.gz | tar -C /usr/bin -zx wait4x \
     # && wget ${GHPROXY}github.com/pymumu/smartdns/releases/latest/download/smartdns-x86_64 -qO /usr/bin/smartdns \
-    && wget ${GHPROXY}github.com/PikuZheng/smartdns/releases/download/1.2025.v46.1.28/smartdns-x86_64-edns -qO /usr/bin/smartdns \
+    && wget ${GHPROXY}github.com/PikuZheng/smartdns/releases/download/1.2025.v47.0.3/smartdns-x86_64-edns -qO /usr/bin/smartdns \
     # && wget ${GHPROXY}github.com/PikuZheng/smartdns/releases/latest/download/smartdns-x86_64-edns -qO /usr/bin/smartdns \
     && wget ${GHPROXY}github.com/honwen/dcompass/releases/download/build-20220316_1022/dcompass-x86_64-unknown-linux-musl -qO /usr/bin/dcompass \
     && chmod a+x /usr/bin/smartdns /usr/bin/dcompass \
-    # && doggo -h \
     && wait4x version \
     && smartdns -v \
     && dcompass -V \
