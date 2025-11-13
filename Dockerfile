@@ -1,4 +1,4 @@
-FROM gitea/gitea:1.24        AS gitea
+FROM gitea/gitea:1.25        AS gitea
 FROM abiosoft/caddy:no-stats AS caddy
 
 FROM chenhw2/alpine:base
