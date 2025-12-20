@@ -14,6 +14,10 @@ on packaging Alpine Linux for Docker.
 This project is now build on top of official [Alpine Linux](https://hub.docker.com/_/alpine/)
 image, only including some convenience packages and scripts on top.
 
+### Mirrors
+
+`aliyun`, refer: https://mirrors.alpinelinux.org/
+
 ### Included packages
 
 To get you started, a set of packages have been integrated:
