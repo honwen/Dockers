@@ -47,10 +47,7 @@ cat <<EOF | yq -oj . >${CONFIG}
         "type": "https",
         "server": "8.8.8.8",
         "server_port": 443,
-        "path": "/dns-query",
-        "tls": {
-          "record_fragment": true
-        }
+        "path": "/dns-query"
       }
     ],
     "final": "google-doh",
