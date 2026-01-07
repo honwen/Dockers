@@ -6,7 +6,7 @@ FROM chenhw2/debian:base AS temp
 
 COPY --from=gost /usr/bin/gost /usr/bin/
 COPY --from=us /usr/bin/udp-speeder /usr/bin/
-COPY --from=plugin /usr/bin/xray-plugin /usr/bin/kcpc /usr/bin/kcps /usr/bin/kcptun /usr/bin/kcptube /usr/bin/kcptube-plugin /usr/bin/shadow-tls /usr/bin/
+COPY --from=plugin /usr/bin/xray-plugin /usr/bin/kcpc /usr/bin/kcps /usr/bin/kcptun /usr/bin/kcptube /usr/bin/kcptube-plugin /usr/bin/
 ADD entrypoint.sh /usr/bin/
 
 FROM chenhw2/debian:base
@@ -17,8 +17,7 @@ RUN set -ex && cd /tmp \
     && apt install -y --no-install-recommends iptables openvpn \
     && rm -rf /var/cache/apt/* /var/cache/debconf/*-old /var/log/apt/* /var/log/*.log
 
-COPY --from=temp /usr/bin/entrypoint.sh /usr/bin/gost /usr/bin/udp-speeder \
-    /usr/bin/xray-plugin /usr/bin/shadow-tls \
+COPY --from=temp /usr/bin/entrypoint.sh /usr/bin/gost /usr/bin/udp-speeder /usr/bin/xray-plugin \
     /usr/bin/kcpc /usr/bin/kcps /usr/bin/kcptun /usr/bin/kcptube /usr/bin/kcptube-plugin \
     /usr/bin/
 
