@@ -5,9 +5,9 @@ LABEL MAINTAINER="https://github.com/honwen"
 RUN cd /tmp \
   && curl -skSLO $( \
   curl -skSL 'https://api.github.com/repos/SagerNet/sing-box/releases' | \
-  yq -r '.[]|.assets[]|.browser_download_url' | grep 'linux-amd64.tar.gz$' | head -n1 \
+  yq -r '.[]|.assets[]|.browser_download_url' | grep 'linux-amd64-musl.tar.gz$' | head -n1 \
   ) \
-  && tar -C /usr/bin --strip-components=1 -zxvf sing-box-*-linux-amd64.tar.gz \
+  && tar -C /usr/bin --strip-components=1 -zxvf sing-box-*-linux-amd64*.tar.gz \
   && sing-box version \
   && rm -rf /tmp/* /usr/bin/LICENSE
 
