@@ -85,6 +85,12 @@ genRouting() {
       "rules": [
         {
           "type": "field",
+          "network": "udp",
+          "port": 443,
+          "outboundTag": "block"
+        },
+        {
+          "type": "field",
           "protocol": [
             "bittorrent"
           ],
@@ -129,7 +135,7 @@ genOtherOutbounds() {
       "listen": "${it}",
       "sniffing": {
         "enabled": true,
-        "destOverride": ["http", "tls"]
+        "destOverride": ["http", "tls", "quic"]
       },
       "settings": {
         "udp": true
@@ -144,7 +150,7 @@ FFF
       "protocol": "vless",
       "sniffing": {
         "enabled": true,
-        "destOverride": ["http", "tls"]
+        "destOverride": ["http", "tls", "quic"]
       },
       "settings": {
         "clients": $(genClients $USERS ${XRAY_REALITY_NETWORK}),
@@ -177,7 +183,7 @@ FFF
       "protocol": "vless",
       "sniffing": {
         "enabled": true,
-        "destOverride": ["http", "tls"]
+        "destOverride": ["http", "tls", "quic"]
       },
       "settings": {
         "clients": $(genClients $USERS 'xhttp'),
