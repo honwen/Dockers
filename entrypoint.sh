@@ -86,6 +86,12 @@ genRouting() {
         {
           "type": "field",
           "network": "udp",
+          "port": 123,
+          "outboundTag": "block"
+        },
+        {
+          "type": "field",
+          "network": "udp",
           "port": 443,
           "outboundTag": "block"
         },
@@ -204,6 +210,10 @@ FFF
     {
       "protocol": "freedom",
       "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "tag": "block"
     }$(genOtherOutbounds)
   ]
 }
