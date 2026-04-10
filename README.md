@@ -19,3 +19,18 @@ $ docker pull chenhw2/caddy2
 
 $ docker run chenhw2/caddy2
 ```
+
+### FAQ
+
+Q: reverse_proxy ngnix get 404?
+
+A:
+
+```Caddyfile
+reverse_proxy squid:3128 {
+    header_up -Via
+    header_up -X-Forwarded-*
+    header_up -X-Real-IP
+    header_up -Forwarded
+}
+```
