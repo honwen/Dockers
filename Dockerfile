@@ -15,14 +15,12 @@ RUN set -ex \
     && for it in ssserver ssmanager sslocal; do ln -sf ssservice $it; done \
     && ssserver -V \
     \
-    && curl -skSL $(curl -skSL 'https://api.github.com/repos/teddysun/xray-plugin/releases' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\).*/\1/p}' | grep 'v1.8.9' | head -n 1) | tar zxv \
-    && mv xray-plugin* xray-plugin \
-    && xray-plugin -version \
-    && ln -sf xray-plugin v2ray-plugin \
-    \
-    && curl -skSL $(curl -skSL 'https://api.github.com/repos/ihciah/shadow-tls/releases/latest' | sed -n '/url.*x86_64/{s/.*\(https:.*linux-musl\).*/\1/p}') -o shadow-tls \
-    && chmod a+x shadow-tls \
-    && shadow-tls -V \
+    && curl -skSL $(curl -skSL 'https://api.github.com/repos/teddysun/v2ray-plugin/releases' | sed -n '/url.*linux-amd64/{s/.*\(https:.*tar.gz\).*/\1/p}' | head -n 1) | tar zxv \
+    && mv v2ray-plugin* ws-plugin \
+    && ws-plugin -version \
+    && ln -sf ws-plugin websocket-plugin \
+    && ln -sf ws-plugin v2ray-plugin \
+    && ln -sf ws-plugin xray-plugin \
     \
     && curl -skSL $(curl -skSL 'https://api.github.com/repos/cnbatch/kcptube/releases/latest' | sed -n '/url.*linux-musl-x64/{s/.*\(https:.*tar.bz2\)[^\.].*/\1/p}') | tar jxv \
     && kcptube \
