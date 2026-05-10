@@ -1,6 +1,6 @@
 #!/bin/sh
 
-XRAY_CONFIG=/opt/xray.json
+XRAY_CONFIG=/opt/xray.jsonc
 
 XRAY_LOGLEVEL=${XRAY_LOGLEVEL:-'warning'}
 XRAY_REALITY_PORT=${XRAY_REALITY_PORT:-443}
