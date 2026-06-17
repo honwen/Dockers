@@ -4,8 +4,8 @@ LABEL MAINTAINER="https://github.com/honwen"
 # /usr/bin/sing-box /data/geo*.db
 RUN cd /tmp \
   && curl -skSL $( \
-  curl -skSL 'https://api.github.com/repos/kyochikuto/sing-box-plus/releases/latest' | \
-  yq -r '.assets[]|.browser_download_url' | grep 'linux-amd64.tar.gz$' \
+  curl -skSL 'https://api.github.com/repos/kyochikuto/sing-box-plus/releases' | \
+  yq -r '.[]|.assets[]|.browser_download_url' | grep -F '1.12' | grep 'linux-amd64.tar.gz$' \
   ) | tar -C /usr/bin/ -zx \
   && mv /usr/bin/sing-box-*/sing-box /usr/bin/ \
   && sing-box version \
