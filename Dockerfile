@@ -11,7 +11,7 @@ RUN set -ex \
     && apk add --no-cache dnsmasq uuidgen tini \
     && curl -skSL ${GHPROXY}github.com/atkrad/wait4x/releases/download/v3.6.0/wait4x-linux-amd64.tar.gz | tar -C /usr/bin -zx wait4x \
     # && wget ${GHPROXY}github.com/pymumu/smartdns/releases/latest/download/smartdns-x86_64 -qO /usr/bin/smartdns \
-    && wget ${GHPROXY}github.com/PikuZheng/smartdns/releases/download/1.2026.v48.0.10/smartdns-x86_64-edns -qO /usr/bin/smartdns \
+    && wget ${GHPROXY}github.com/PikuZheng/smartdns/releases/download/1.2026.v48.1.7/smartdns-x86_64-edns -qO /usr/bin/smartdns \
     # && wget ${GHPROXY}github.com/PikuZheng/smartdns/releases/latest/download/smartdns-x86_64-edns -qO /usr/bin/smartdns \
     && wget ${GHPROXY}github.com/honwen/dcompass/releases/download/build-20220316_1022/dcompass-x86_64-unknown-linux-musl -qO /usr/bin/dcompass \
     && chmod a+x /usr/bin/smartdns /usr/bin/dcompass \
