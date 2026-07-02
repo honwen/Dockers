@@ -1,0 +1,19 @@
+FROM chenhw2/alpine:base
+LABEL MAINTAINER="https://github.com/honwen"
+
+# /usr/bin/sing-box /data/geo*.db
+RUN cd /tmp \
+  && curl -skSLO https://github.com/SagerNet/sing-box/releases/download/v1.11.15/sing-box-1.11.15-linux-amd64.tar.gz \
+  && tar -C /usr/bin --strip-components=1 -zxvf sing-box-*-linux-amd64.tar.gz \
+  && sing-box version \
+  && rm -rf /tmp/* /usr/bin/LICENSE \
+  && mkdir -p /geodata \
+  && cd /geodata \
+  && curl -skSLO https://github.com/soffchen/sing-geoip/releases/latest/download/geoip.db \
+  && curl -skSLO https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db
+
+ENV ENABLE_DEPRECATED_GEOSITE=true \
+    ENABLE_DEPRECATED_GEOIP=true
+
+CMD ["sing-box", "run", "-c", "/opt/config.json"]
+

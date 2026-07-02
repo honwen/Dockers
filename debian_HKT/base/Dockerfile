@@ -1,0 +1,26 @@
+#
+# Debian 12 CURL, WGET, YQ, HTTPS, HKT_TIMEZONE
+#
+
+# FROM debian:12-slim
+FROM bitnami/minideb:bookworm
+
+ENV TZ="Asia/Hong_Kong" \
+    LANG="C.utf8" \
+    LANGUAGE="C.utf8" \
+    LC_ALL="C.utf8"
+
+RUN set -ex && cd /tmp \
+    && sed "s+//.*debian.org+//mirrors.aliyun.com+g; /^#/d" -i /etc/apt/sources.list \
+    && echo 'APT::Get::Update::SourceListWarnings::NonFreeFirmware "false";' >/etc/apt/apt.conf.d/no-firmware-warnings.conf \
+    && echo 'APT::Get::Always-Include-Phased-Updates "true";' >/etc/apt/apt.conf.d/always-update.conf \
+    && apt update -y --allow-releaseinfo-change \
+    && apt install -y --no-install-recommends curl wget ca-certificates net-tools procps \
+    && curl https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -sSLo /usr/bin/yq \
+    && chmod a+x /usr/bin/yq \
+    && echo $TZ >/etc/timezone \
+    && ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && ln -sf bash $(which sh) \
+    && date \
+    && locale \
+    && rm -rf /var/cache/apt/* /var/lib/apt/lists/* /var/cache/debconf/*-old /var/log/apt/* /var/log/*.log
