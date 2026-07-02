@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>LibreSpeed</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <!-- Set theme before first paint to avoid FOUC. Follows the system
+     preference unless the user has chosen explicitly (stored in localStorage). -->
+    <script type="text/javascript">
+      (function () {
+        var t = null;
+        try {
+          t = localStorage.getItem("librespeed-theme");
+        } catch (e) {}
+        var theme;
+        if (t === "light" || t === "dark") {
+          theme = t;
+        } else {
+          theme =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <script type="text/javascript" src="speedtest.js"></script>
+    <script type="text/javascript">
+      //INITIALIZE SPEEDTEST
+      var s = new Speedtest(); //create speedtest object
+      s.onupdate = function (data) {
+        //callback to update data in UI
+        I("ip").textContent = data.clientIp;
+        I("dlText").textContent =
+          data.testState == 1 && data.dlStatus == 0 ? "..." : data.dlStatus;
+        I("ulText").textContent =
+          data.testState == 3 && data.ulStatus == 0 ? "..." : data.ulStatus;
+        I("pingText").textContent = data.pingStatus;
+        I("jitText").textContent = data.jitterStatus;
+        var prog =
+          (Number(data.dlProgress) * 2 +
+            Number(data.ulProgress) * 2 +
+            Number(data.pingProgress)) /
+          5;
+        I("progress").style.width = 100 * prog + "%";
+      };
+      s.onend = function (aborted) {
+        //callback for test ended/aborted
+        var btn = I("startStopBtn");
+        btn.className = ""; //show start button again
+        btn.setAttribute("aria-label", "Start speed test");
+        if (aborted) {
+          //if the test was aborted, clear the UI and prepare for new test
+          initUI();
+        }
+      };
+
+      function startStop() {
+        //start/stop button pressed
+        var btn = I("startStopBtn");
+        if (s.getState() == 3) {
+          //speedtest is running, abort
+          s.abort();
+        } else {
+          //test is not running, begin
+          s.start();
+          btn.className = "running";
+          btn.setAttribute("aria-label", "Abort speed test");
+        }
+      }
+
+      //function to (re)initialize UI
+      function initUI() {
+        I("dlText").textContent = "";
+        I("ulText").textContent = "";
+        I("pingText").textContent = "";
+        I("jitText").textContent = "";
+        I("ip").textContent = "";
+      }
+
+      //THEME: follows the system preference by default; the toggle overrides
+      //and persists the choice in localStorage.
+      function prefTheme() {
+        try {
+          var s = localStorage.getItem("librespeed-theme");
+          if (s === "light" || s === "dark") return s;
+        } catch (e) {}
+        return null;
+      }
+      function systemTheme() {
+        return window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      }
+      function applyTheme(theme) {
+        document.documentElement.dataset.theme = theme;
+        updateThemeBtn(theme);
+      }
+      function toggleTheme() {
+        var cur = document.documentElement.dataset.theme;
+        var next = cur === "dark" ? "light" : "dark";
+        try {
+          localStorage.setItem("librespeed-theme", next);
+        } catch (e) {}
+        applyTheme(next);
+      }
+      function updateThemeBtn(theme) {
+        var btn = I("themeToggle");
+        if (!btn) return;
+        btn.setAttribute(
+          "aria-label",
+          theme === "dark" ? "Switch to light mode" : "Switch to dark mode",
+        );
+      }
+      //Live-follow system changes when no explicit preference is stored
+      if (window.matchMedia) {
+        var mq = window.matchMedia("(prefers-color-scheme: dark)");
+        var onMQ = function () {
+          if (prefTheme() === null) {
+            applyTheme(systemTheme());
+          }
+        };
+        if (mq.addEventListener) {
+          mq.addEventListener("change", onMQ);
+        } else if (mq.addListener) {
+          mq.addListener(onMQ);
+        }
+      }
+
+      function I(id) {
+        return document.getElementById(id);
+      }
+    </script>
+
+    <style type="text/css">
+      /* Design: dual-mode instrument panel. Theme follows the system
+       preference by default with a manual light/dark toggle override.
+       One accent (cyan/teal) for the primary action and live progress;
+       red reserved for the abort state. */
+      :root {
+        color-scheme: light;
+        --danger: #cf3d22;
+        --radius: 18px;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --bg: #f6f7f9;
+        --surface: #ffffff;
+        --surface-2: #eef0f3;
+        --border: rgba(15, 23, 42, 0.1);
+        --text: #0f1115;
+        --text-dim: #4a515b;
+        --text-faint: #646b74;
+        --accent: #0a8a9c;
+        --btn-bg: #0a6e7d;
+        --btn-fg: #ffffff;
+        --shadow: 0 8px 32px rgba(15, 23, 42, 0.07);
+      }
+      :root[data-theme="dark"] {
+        color-scheme: dark;
+        --bg: #0a0c0f;
+        --surface: #111418;
+        --surface-2: #191d23;
+        --border: rgba(255, 255, 255, 0.08);
+        --text: #e8eaed;
+        --text-dim: #9aa1ab;
+        --text-faint: #7e858f;
+        --accent: #34d3e0;
+        --btn-bg: #34d3e0;
+        --btn-fg: #04141a;
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui,
+          sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100dvh;
+        padding: clamp(2rem, 6vw, 4rem) 1.25rem;
+        text-align: center;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        transition:
+          background-color 0.3s var(--ease),
+          color 0.3s var(--ease);
+      }
+      .stage {
+        width: 100%;
+        max-width: 620px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.75rem;
+      }
+      header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+        transition: color 0.3s var(--ease);
+      }
+      .wordmark {
+        margin: 0;
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        font-weight: 650;
+        letter-spacing: -0.02em;
+        transition: color 0.3s var(--ease);
+      }
+      .subtitle {
+        margin: 0;
+        font-size: 0.86rem;
+        color: var(--text-dim);
+        transition: color 0.3s var(--ease);
+      }
+
+      /* Theme toggle: icons composed from SVG primitives (circle/line/mask) */
+      .theme-toggle {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 10;
+        -webkit-appearance: none;
+        appearance: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        background: var(--surface);
+        color: var(--text-dim);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        cursor: pointer;
+        transition:
+          color 0.25s var(--ease),
+          background-color 0.3s var(--ease),
+          border-color 0.3s var(--ease),
+          transform 0.25s var(--ease);
+        box-shadow: var(--shadow);
+      }
+      .theme-toggle:hover {
+        color: var(--text);
+        transform: translateY(-1px);
+      }
+      .theme-toggle:active {
+        transform: translateY(0) scale(0.96);
+      }
+      .theme-toggle:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .theme-toggle .icon {
+        width: 18px;
+        height: 18px;
+        display: block;
+      }
+      .theme-toggle .icon-sun {
+        display: none;
+      }
+      :root[data-theme="dark"] .theme-toggle .icon-moon {
+        display: none;
+      }
+      :root[data-theme="dark"] .theme-toggle .icon-sun {
+        display: block;
+      }
+
+      #startStopBtn {
+        -webkit-appearance: none;
+        appearance: none;
+        font: inherit;
+        font-weight: 600;
+        font-size: 1.0625rem;
+        letter-spacing: 0.01em;
+        color: var(--btn-fg);
+        background: var(--btn-bg);
+        border: 1px solid transparent;
+        border-radius: 999px;
+        padding: 0.9rem 2.6rem;
+        cursor: pointer;
+        min-width: 11rem;
+        transition:
+          transform 0.25s var(--ease),
+          box-shadow 0.25s var(--ease),
+          background-color 0.3s var(--ease),
+          color 0.3s var(--ease);
+        box-shadow: var(--shadow);
+      }
+      #startStopBtn:hover {
+        transform: translateY(-1px);
+      }
+      #startStopBtn:active {
+        transform: translateY(0) scale(0.98);
+      }
+      #startStopBtn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+      }
+      #startStopBtn:before {
+        content: "Start";
+      }
+      #startStopBtn.running {
+        background: var(--danger);
+        color: #fff;
+        box-shadow: 0 8px 28px rgba(207, 61, 34, 0.32);
+      }
+      #startStopBtn.running:before {
+        content: "Abort";
+      }
+
+      .metrics {
+        width: 100%;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem 1.25rem 1.25rem;
+        box-shadow: var(--shadow);
+        transition:
+          background-color 0.3s var(--ease),
+          border-color 0.3s var(--ease);
+      }
+      #progressBar {
+        width: 100%;
+        height: 6px;
+        background: var(--surface-2);
+        border-radius: 999px;
+        overflow: hidden;
+        margin-bottom: 1.6rem;
+        transition: background-color 0.3s var(--ease);
+      }
+      #progress {
+        height: 100%;
+        width: 0%;
+        border-radius: 999px;
+        background: var(--accent);
+        transition:
+          width 0.4s var(--ease),
+          background-color 0.3s var(--ease);
+      }
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1px;
+        background: var(--border);
+        transition: background-color 0.3s var(--ease);
+      }
+      .testArea {
+        background: var(--surface);
+        padding: 1.1rem 0.5rem;
+        transition: background-color 0.3s var(--ease);
+      }
+      .testName {
+        margin: 0 0 0.55rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text-faint);
+        transition: color 0.3s var(--ease);
+      }
+      .meterText {
+        margin: 0;
+        font-size: clamp(1.5rem, 5vw, 2.1rem);
+        font-weight: 600;
+        line-height: 1;
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: "tnum" 1;
+        transition: color 0.3s var(--ease);
+      }
+      .meterText:empty:before {
+        content: "0.00";
+        color: var(--text-faint);
+      }
+      #pingText:empty:before,
+      #jitText:empty:before {
+        content: "0";
+      }
+      .unit {
+        margin: 0.45rem 0 0;
+        font-size: 0.72rem;
+        color: var(--text-faint);
+        transition: color 0.3s var(--ease);
+      }
+
+      #ipArea {
+        margin: 0;
+        font-size: 0.82rem;
+        color: var(--text-dim);
+        font-variant-numeric: tabular-nums;
+        transition: color 0.3s var(--ease);
+      }
+      #ipArea .lbl {
+        color: var(--text-faint);
+        margin-right: 0.4rem;
+        transition: color 0.3s var(--ease);
+      }
+
+      footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .source-link {
+        font-size: 0.82rem;
+        color: var(--text-dim);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition:
+          color 0.2s var(--ease),
+          border-color 0.2s var(--ease);
+      }
+      .source-link:hover {
+        color: var(--text);
+        border-bottom-color: var(--border);
+      }
+
+      @media all and (max-width: 520px) {
+        .metrics-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition-duration: 0.001ms !important;
+          animation: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      id="themeToggle"
+      class="theme-toggle"
+      type="button"
+      onclick="toggleTheme()"
+      aria-label="Switch to dark mode"
+    >
+      <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+        <mask id="moon-mask">
+          <rect width="24" height="24" fill="white" />
+          <circle cx="15" cy="9" r="7" fill="black" />
+        </mask>
+        <circle
+          cx="12"
+          cy="12"
+          r="8"
+          fill="currentColor"
+          mask="url(#moon-mask)"
+        />
+      </svg>
+      <svg
+        class="icon icon-sun"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="4" />
+        <line x1="12" y1="2.5" x2="12" y2="4.5" />
+        <line x1="12" y1="19.5" x2="12" y2="21.5" />
+        <line x1="2.5" y1="12" x2="4.5" y2="12" />
+        <line x1="19.5" y1="12" x2="21.5" y2="12" />
+        <line x1="5.2" y1="5.2" x2="6.6" y2="6.6" />
+        <line x1="17.4" y1="17.4" x2="18.8" y2="18.8" />
+        <line x1="5.2" y1="18.8" x2="6.6" y2="17.4" />
+        <line x1="17.4" y1="6.6" x2="18.8" y2="5.2" />
+      </svg>
+    </button>
+
+    <main class="stage">
+      <header>
+        <h1 class="wordmark">LibreSpeed</h1>
+        <p class="subtitle">Network speed test</p>
+      </header>
+
+      <button
+        id="startStopBtn"
+        type="button"
+        onclick="startStop()"
+        aria-label="Start speed test"
+      ></button>
+
+      <section class="metrics" aria-label="Speed test results">
+        <div id="progressBar"><div id="progress"></div></div>
+        <div class="metrics-grid">
+          <div class="testArea">
+            <div class="testName">Download</div>
+            <div id="dlText" class="meterText"></div>
+            <div class="unit">Mbps</div>
+          </div>
+          <div class="testArea">
+            <div class="testName">Upload</div>
+            <div id="ulText" class="meterText"></div>
+            <div class="unit">Mbps</div>
+          </div>
+          <div class="testArea">
+            <div class="testName">Ping</div>
+            <div id="pingText" class="meterText"></div>
+            <div class="unit">ms</div>
+          </div>
+          <div class="testArea">
+            <div class="testName">Jitter</div>
+            <div id="jitText" class="meterText"></div>
+            <div class="unit">ms</div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <p id="ipArea"><span class="lbl">IP</span><span id="ip"></span></p>
+        <a class="source-link" href="https://github.com/librespeed/speedtest"
+          >Source code</a
+        >
+      </footer>
+    </main>
+    <script type="text/javascript">
+      initUI();
+      updateThemeBtn(document.documentElement.dataset.theme);
+    </script>
+  </body>
+</html>
