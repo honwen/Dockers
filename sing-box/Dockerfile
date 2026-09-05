@@ -9,4 +9,3 @@ RUN cd /tmp \
   && rm -rf /tmp/* /usr/bin/LICENSE
 
 CMD ["sing-box", "run", "-c", "/opt/config.json"]
-

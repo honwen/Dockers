@@ -106,7 +106,7 @@ EEE
           },
           "warp_noise": {
             "enable": ${WARP_NOISE:-true},
-            "packet_count": "8-24",
+            "packet_count": "24-64",
             "packet_delay": "1-4"
           }
         }

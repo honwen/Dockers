@@ -22,7 +22,8 @@ ENV ACME_AGREE=true \
     GITEA_CUSTOM=/data/gitea \
     WS_PREFIX=/wss \
     FAKE_MODE=on \
-    EXTRA_PROXYS="/metrics http://_LOCALHOST_:9100,/example http://git.example.com/git,/git https://www.example.com/example"
+    EXTRA_PROXYS="/metrics http://_LOCALHOST_:9100,/example http://git.example.com/git,/git https://www.example.com/example" \
+    ACME_CA=https://acme.zerossl.com/v2/DV90
 
 VOLUME ["/data", "/opt/caddy"]
 

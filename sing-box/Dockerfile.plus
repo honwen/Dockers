@@ -5,11 +5,10 @@ LABEL MAINTAINER="https://github.com/honwen"
 RUN cd /tmp \
   && curl -skSL $( \
   curl -skSL 'https://api.github.com/repos/kyochikuto/sing-box-plus/releases' | \
-  yq -r '.[]|.assets[]|.browser_download_url' | grep -F '1.12' | grep 'linux-amd64.tar.gz$' \
+  yq -r '.[]|.assets[]|.browser_download_url' | grep -F '1.13' | grep 'linux-amd64-musl.tar.gz$' \
   ) | tar -C /usr/bin/ -zx \
   && mv /usr/bin/sing-box-*/sing-box /usr/bin/ \
   && sing-box version \
   && rm -rf /tmp/* /usr/bin/sing-box-*
 
 CMD ["sing-box", "run", "-c", "/opt/config.json"]
-

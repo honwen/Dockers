@@ -4,6 +4,7 @@ CADDY_HOME=${CADDY_HOME:-/opt/caddy}
 CADDY_DATAROOT=${CADDY_DATAROOT:-/var/run/caddy}
 EXTRA_DOMAINS="$(echo ${EXTRA_DOMAINS} | grep -v 'example.com' | sed 's;[,;]; ;g')"
 NOSSL=${NOSSL:-0}
+ACME_CA=${ACME_CA:-https://acme.zerossl.com/v2/DV90}
 
 # MKDIR Init
 mkdir -p /etc/caddy /data/gitea $CADDY_DATAROOT $CADDY_HOME
@@ -128,8 +129,11 @@ EOF
 cat <<EOF | sed "s+_LOCALHOST_+${host_ip}+g" >$CADDY_HOME/Caddyfile
 {
     admin off
-    acme_ca https://acme.zerossl.com/v2/DV90
+    acme_ca ${ACME_CA}
     email   acme@${DOMAIN}
+    servers {
+        protocols h1 h2
+    }
 }
 
 :80 {

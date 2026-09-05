@@ -16,4 +16,3 @@ ENV ENABLE_DEPRECATED_GEOSITE=true \
     ENABLE_DEPRECATED_GEOIP=true
 
 CMD ["sing-box", "run", "-c", "/opt/config.json"]
-
