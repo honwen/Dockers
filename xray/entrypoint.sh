@@ -207,10 +207,7 @@ FFF
     }
   ],$(genRouting)
   "outbounds": [
-    {
-      "protocol": "freedom",
-      "tag": "direct"
-    },
+    { "protocol": "freedom", "tag": "direct", "settings": { "finalRules": [ { "action": "allow", "ip": [ "0.0.0.0/0" ] } ] } },
     {
       "protocol": "blackhole",
       "tag": "block"
