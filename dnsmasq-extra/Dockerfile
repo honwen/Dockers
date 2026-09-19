@@ -9,7 +9,7 @@ ARG GHPROXY="https://edgeone.gh-proxy.org/https://"
 RUN set -ex \
     && sed 's/dl-cdn.alpinelinux.org/mirrors.cernet.edu.cn/g' -i /etc/apk/repositories \
     && apk add --no-cache dnsmasq uuidgen tini \
-    && curl -skSL ${GHPROXY}github.com/atkrad/wait4x/releases/download/v3.6.0/wait4x-linux-amd64.tar.gz | tar -C /usr/bin -zx wait4x \
+    && curl -skSL ${GHPROXY}github.com/wait4x/wait4x/releases/download/v3.7.1/wait4x-linux-amd64.tar.gz | tar -C /usr/bin -zx wait4x \
     # && wget ${GHPROXY}github.com/pymumu/smartdns/releases/latest/download/smartdns-x86_64 -qO /usr/bin/smartdns \
     && wget ${GHPROXY}github.com/PikuZheng/smartdns/releases/download/1.2026.v48.4.1/smartdns-x86_64-edns -qO /usr/bin/smartdns \
     # && wget ${GHPROXY}github.com/PikuZheng/smartdns/releases/latest/download/smartdns-x86_64-edns -qO /usr/bin/smartdns \
