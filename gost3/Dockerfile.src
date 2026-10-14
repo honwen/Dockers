@@ -1,0 +1,32 @@
+#
+# gost3 (the honwen/gost3 fork of go-gost/gost v3) — built from source,
+# source ref aligned with the latest release of the fork. Pin a release with: --build-arg GOST_VER=v3.3.0
+#
+FROM golang:1.26-alpine AS builder
+
+ARG GOST_VER=""
+ARG GOPROXY="https://mirrors.aliyun.com/goproxy/,https://mirrors.tencent.com/go/,direct"
+
+# /usr/bin/gost
+RUN set -ex \
+    && apk add --no-cache curl yq-go \
+    && if [ -z "${GOST_VER}" ]; then \
+         GOST_VER=$(curl -skSL https://api.github.com/repos/honwen/gost3/releases/latest | yq -r '.tag_name'); \
+       fi \
+    && [ -n "${GOST_VER}" ] && [ "${GOST_VER}" != "null" ] \
+    && echo "building gost ${GOST_VER} from source" \
+    && mkdir -p /src \
+    && curl -skSL "https://github.com/honwen/gost3/archive/refs/tags/${GOST_VER}.tar.gz" | tar -xz -C /src --strip-components=1 \
+    && cd /src \
+    && go env -w GOPROXY="${GOPROXY}" \
+    && CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.version=${GOST_VER}" -o /usr/bin/gost ./cmd/gost \
+    && /usr/bin/gost -V
+
+FROM chenhw2/alpine:base
+LABEL MAINTAINER="HONWEN <https://github.com/honwen>"
+
+COPY --from=builder /usr/bin/gost /usr/bin/gost
+
+ENV ARGS="-L=:8080"
+
+CMD ["/bin/sh", "-c", "/usr/bin/gost ${ARGS} ${METRIC:+-metrics=:${METRIC}}"]

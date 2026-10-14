@@ -1,8 +1,8 @@
 ### Source
-- https://github.com/chenhw2/Dockers/tree/gost
+- https://github.com/chenhw2/Dockers/tree/master/gost
   
 ### Thanks to
-- https://github.com/ginuerzh/gost
+- https://github.com/ginuerzh/gost (binary built from the fork https://github.com/honwen/gost)
 - https://github.com/sgerrand/alpine-pkg-glibc
   
 ### Usage

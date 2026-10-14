@@ -1,18 +1,18 @@
 ### Source
-- https://github.com/chenhw2/Dockers/tree/gost
+- https://github.com/chenhw2/Dockers/tree/master/gost3
   
 ### Thanks to
-- https://github.com/ginuerzh/gost
+- https://github.com/go-gost/gost (binary built from the fork https://github.com/honwen/gost3)
 - https://github.com/sgerrand/alpine-pkg-glibc
   
 ### Usage
 ```
-$ docker pull chenhw2/gost
+$ docker pull chenhw2/gost3
 
 $ docker run -d \
     -e "ARGS=-L=socks://:1080" \
     -p 1080:1080/tcp \
-    chenhw2/gost
+    chenhw2/gost3
 ```
 
 ### Features
@@ -32,7 +32,7 @@ $ docker run -d \
 
 ### Help
 ```
-$ docker run --rm chenhw2/gost -h
+$ docker run --rm chenhw2/gost3 -h
   -C string
     	configure file
   -D	enable debug log
