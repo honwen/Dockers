@@ -97,7 +97,7 @@ EEE
           "allowed_ips": ["0.0.0.0/0"],
           "reserved": ${reserved},
           "warp_scanner": {
-            "enable_ip_scanner": ${WARP_AUTO_IP:-false},
+            "enable_ip_scanner": ${WARP_AUTO_IP:-true},
             "enable_port_scanner": ${WARP_AUTO_PORT:-false},
             "cidrs": [
               "162.159.192.0/24",
