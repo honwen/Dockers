@@ -2,7 +2,7 @@ FROM caddy:2-builder AS builder
 
 ENV CGO_ENABLED=0
 ARG GOPROXY="https://mirrors.aliyun.com/goproxy/,https://mirrors.tencent.com/go/,direct"
-ARG CADDY_VERSION=v2.11.3
+ARG CADDY_VERSION=v2.11.9
 
 RUN xcaddy build \
     --with github.com/caddy-dns/alidns \
